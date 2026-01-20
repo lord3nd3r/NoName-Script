@@ -1,214 +1,41 @@
-; 
-; NoNameScript Refreshed Theme Engine (2026)
-; Coded by Assistant (GitHub Copilot)
-; 
+; Compatibility layer for NoNameScript Theme Engine -> KTE (MTS)
 
-; -- API & Utilities --
-
-alias thmecho {
-  var %t = -a
-  if (-* iswm $1) { %t = $1 | tokenize 32 $2- }
-  echo %t $1-
+alias themes {
+  theme.load
 }
 
-alias thmhl { return  $+ $1- $+  }
-alias thmls { return } ; No-op/Placeholder
-
-alias thmdata {
-  ; Usage: $thmdata(file, item)
-  if (!$isfile($1)) return
-  return $read($1, ns, $2)
+alias sub.themes {
+  if ($1 == begin) {
+    if ($hget(ThemeList)) hfree ThemeList
+    hmake ThemeList 10
+    var %d = $qt($mircdirthemes\MTS\*.mts)
+    noop $findfile($mircdirthemes\MTS, *.mts, 0, 1, hadd ThemeList $calc($hget(ThemeList,0).item + 1) $1-)
+    return
+  }
+  if ($1 == end) {
+    if ($hget(ThemeList)) hfree ThemeList
+    return
+  }
+  if ($1 isnum) {
+    if ($hget(ThemeList, $1)) {
+      var %f = $v1
+      var %name = $nopath(%f)
+      var %disp = $left(%name, -4)
+      return %disp $+ :theme.load $qt(%f)
+    }
+  }
 }
 
-alias schmprt {
-  ; Usage: $schmprt(Scheme definition string).prop
-  ; Scheme string format: Name (rgb values...) (color indexes...)
-  ; This is an assumption based on reading previous code.
-  if ($prop == name) return $replace($gettok($1,1,32),_,$chr(32))
-  if ($prop == rgb) return $gettok($1,2-17,32)
-  if ($prop == colors) return $gettok($1,18-,32)
+alias sub.schemes {
+  return
 }
 
 alias thm.ldef {
-  thmload themes\Moredots.nnt
+  theme.load $qt($mircdirthemes\MTS\clean.mts)
 }
 
-alias thm.def { return themes\Moredots.nnt }
-
-; -- Loading Logic --
-
-alias thmload {
-  ; Usage: thmload [-sScheme] <ThemeFile>
-  var %scheme, %file, %sName
-  
-  if (-s* iswm $1) {
-    %scheme = $mid($1, 3)
-    %file = $2-
-  }
-  else {
-    %file = $1-
-  }
-  
-  if (!$isfile(%file)) {
-    thmecho -a [Theme] Error: File not found: %file
-    return
-  }
-  
-  var %name = $thmdata(%file, Name)
-  var %ver = $thmdata(%file, Version)
-  var %author = $thmdata(%file, Author)
-  
-  ; -- Loading Window --
-  window -ph +d @Loading 0 0 $window(-3).w $window(-3).h
-  drawrect -nrf @Loading 14935011 0 0 0 $window(@Loading).w $window(@Loading).h
-  drawtext @Loading 0 Tahoma 12 10 10 Loading Theme...
-  drawtext @Loading 0 Tahoma 10 10 40 %name %ver by %author
-  
-  ; -- Scheme Handling --
-  remini $qt($mircini) colors
-  remini $qt($mircini) palettes
-  
-  var %schData
-  if (%scheme) {
-    %schData = $thmdata(%file, Scheme $+ %scheme)
-  }
-  
-  if (!%schData) {
-    ; Try Scheme1 or Scheme0 as default if no specific scheme requested
-    %schData = $thmdata(%file, Scheme1)
-    if (!%schData) %schData = $thmdata(%file, Scheme0)
-    
-    ; Fallback to generic dark scheme if completely missing (Values from DarkReign)
-    if (!%schData) {
-       thmecho -a [Theme] Warning: No scheme found, using default Dark.
-       %schData = Scheme1 Dark 16777215 0 4205603 37632 133117 127 10223772 32764 65535 64512 16756620 15785687 8411206 16711935 8355711 13816530 1 12 12 4 12 12 12 4 4 10 10 14 12 12 6 14 10 10 12 12 12 1 12 1 12 12 6 0 1 12
-    }
-  }
-  
-  if (%schData) {
-    var %sName = $schmprt(%schData).name
-    var %sRgb = $schmprt(%schData).rgb
-    var %sCols = $schmprt(%schData).colors
-    
-    writeini $qt($mircini) palettes n0 $replace(%sRgb, $chr(32), $chr(44))
-    writeini $qt($mircini) colors n0 %sName $+ , $+ $replace(%sCols, $chr(32), $chr(44))
-    
-    color -l
-    if (%sName) color -s %sName
-  }
-  
-  ; -- Fonts & Treebar --
-  var %font = $thmdata(%file, Font)
-  var %fsize = $thmdata(%file, FontSize)
-  if (%font) {
-    font -z %fsize %font
-    if ($dll(treebar.dll) && $window(@treebar)) {
-      ; Use safe default calculation for points since helper is in aliases.nns or manual
-      var %pt = $calc(%fsize * 0.75) 
-      ; Or use external alias if present
-      if ($isalias(convertfontsize)) %pt = $convertfontsize(%fsize).points
-      
-      xtreebar -f + default %pt %font
-    }
-  }
-  
-  ; -- Nick Colors --
-  .cnick -r *
-  if ($thmdata(%file, NickColOp)) .cnick * $v1 @
-  if ($thmdata(%file, NickColVoice)) .cnick * $v1 +
-  if ($thmdata(%file, NickColRegular)) .cnick -n * $v1
-  if ($thmdata(%file, NickColSelf)) .cnick $me $v1
-  
-  ; -- Cleanup --
-  window -c @Loading
-  thmecho -a [Theme] Loaded: $thmhl(%name %ver) by $thmhl(%author)
-  
-  set %thm.current %file
-  if (%scheme) set %thm.scheme %scheme
-  else unset %thm.scheme
-}
-
-; -- Dialog --
-
-dialog themes {
-  title NoNameScript Refreshed Theme Engine (2026)
-  size -1 -1 484 380
-  option pixels
-  icon scripts\pics\nntray.ico, 0
-  
-  ; Simplified UI: Only Selection Tab
-  box "Select Theme", 1, 10 10 464 360
-  
-  ; List
-  list 90, 20 30 140 330, size
-  
-  ; Info
-  text "Name:", 8, 170 30 40 16
-  text "", 11, 220 30 240 16
-  
-  text "Author:", 9, 170 50 40 16
-  text "", 14, 220 50 240 16
-  
-  text "Description:", 58, 170 80 80 16
-  edit "", 71, 170 100 290 100, read multi return vsbar
-  
-  button "&Load Theme", 19, 360 330 100 24
-  button "&Close", 3, 250 330 100 24, cancel
-}
-
-alias themes {
-  if ($dialog(themes)) dialog -v themes
-  else dialog -m themes themes
-}
-
-on *:dialog:themes:init:0: {
-  thmllist
-}
-
-on *:dialog:themes:sclick:3: {
-  dialog -x themes
-}
-
-on *:dialog:themes:sclick:19: {
-  ; Load Selected
-  var %sel = $did(themes, 90).sel
-  if (!%sel) return
-  
-  var %file = themes\ $+ $did(themes, 90).seltext
-  if ($isfile(%file)) {
-    thmload %file
-  }
-}
-
-on *:dialog:themes:sclick:90: {
-  ; Update Info when clicking list
-  var %file = themes\ $+ $did(themes, 90).seltext
-  if ($isfile(%file)) {
-    did -ra themes 11 $thmdata(%file, Name)
-    did -ra themes 14 $thmdata(%file, Author)
-    did -ra themes 71 $thmdata(%file, Description)
-  }
-}
-
-alias thmllist {
-  did -r themes 90
-  ; Find all .nnt files in themes folder and show only filename
-  noop $findfile(themes, *.nnt, 0, 0, did -a themes 90 $nopath($1-))
-}
-
-; -- Compatibility Stubs --
-alias thmprev { }
-alias thmprevsize { return 0 }
-alias thmcscriptsize { return 0 }
-alias thmvchk { return 1 }
-
-; -- Legacy/Missing Aliases (Stubs) --
-alias winpic { return }
-alias thmupd { thmload %thm.current }
-alias thm.lrand { thm.ldef }
-alias playmircsound { return }
-alias adtheme {
-  thmecho -a I am using NoNameScript Refreshed (2026) -> Theme: $thmdata(%thm.current,Name) by $thmdata(%thm.current,Author)
-}
-alias aecho { echo $1- }
-alias crwinpic { return }
+; Stub out other old commands to prevent errors
+alias thmload return
+alias thmsave return
+alias thm.export return
+alias thm.import return
