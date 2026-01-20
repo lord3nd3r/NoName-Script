@@ -207,8 +207,9 @@ on *:start:{
     }
     inc %i
   }
-  if (%z) { echo -s  }
-  return
+  if (%z) { echo -s  }  ; Ensure dark readable colors are applied and kept applied in case other scripts try to set bright themes
+  if (%fixcolors.auto == $null) { set %fixcolors.auto 1 }
+  if (%fixcolors.auto) { .timerfixcolors -o 1 60 fixcolors | .timer 1 0 fixcolors }  return
   :error
   errdialog an error occured while loading the script: $error
   reseterror
