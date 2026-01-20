@@ -77,6 +77,12 @@ alias thmload {
     ; Try Scheme1 or Scheme0 as default if no specific scheme requested
     %schData = $thmdata(%file, Scheme1)
     if (!%schData) %schData = $thmdata(%file, Scheme0)
+    
+    ; Fallback to generic dark scheme if completely missing
+    if (!%schData) {
+       thmecho -a [Theme] Warning: No scheme found in file, using default Base Dark.
+       %schData = Scheme1 Base_Dark 16777215 0 4205603 37632 133117 127 10223772 32764 65535 64512 16756620 15785687 8411206 16711935 8355711 13816530 1 12 12 4 12 12 12 4 4 10 10 14 12 12 6 14 10 10 12 12 12 1 12 1 12 12 6 0 1 12
+    }
   }
   
   if (%schData) {
