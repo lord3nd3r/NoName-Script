@@ -79,8 +79,8 @@ on *:dialog:q.uc:*:*:{
     mdx SetControlMDX $dname 2 ListView report showsel single rowselect > $mdxfile(views)
     did -i $dname 2 1 settxt bgcolor none
     did -ra $dname 3 $remove(%q.not.hide.nick. [ $+ [ $cid ] ] $+ 's auth nick,$chr(35))
-    did -i $dname 2 1 headerdims 130:1 92:2
-    did -i $dname 2 1 headertext + 0 Channel   	+c 0 Modes
+    ; did -i $dname 2 1 headerdims 130:1 92:2
+    ; did -i $dname 2 1 headertext + 0 Channel   	+c 0 Modes
     did -b $dname 2,9,10,11,12,13,14,15,16,17,19,20,22,23,24,25
     .timerq.uc.enable 1 5 q.uc.enable
     openad q.uc 57 56 58
@@ -203,7 +203,7 @@ on ^*:notice:*:?:{
           var %x = $didwm(q.uc,2,? +* 0 0 0 %q.not.hide.chan. [ $+ [ $cid ] ] $+ 	*)
           if ($did(q.uc,8) != +) {
             if (%x) { did -o q.uc 2 %x $puttok($did(q.uc,2,%x),$did(q.uc,8),-1,32) }
-            else { did -a q.uc 2 1 + 0 0 0 %q.not.hide.chan. [ $+ [ $cid ] ] $+ $chr(9) $+ + 0 0 0 $did(q.uc,8) }
+            else { did -a q.uc 2 1 %q.not.hide.chan. [ $+ [ $cid ] ] $+ $chr(9) $+ $did(q.uc,8) }
           }
           elseif (%x) { did -d q.uc 2 %x }
           did -e q.uc 2,10,11,12,13,14,15,16,19,20,22
@@ -236,7 +236,7 @@ on ^*:notice:*:?:{
       elseif ($1- == Couldn't find that channel) {
         if ($dialog(q.uc)) {
           if (!$did(q.uc,2).enabled) {
-            did -a q.uc 2 1 + 0 0 0 Unknown
+            did -a q.uc 2 1 Unknown
             did -ra q.uc 8 Unknown
             did -e q.uc 21
           }
@@ -249,7 +249,7 @@ on ^*:notice:*:?:{
             did -ra q.uc 8 $2
             q.uc.checks $2
           }
-          did -a q.uc 2 1 + 0 0 0 $1 $+ 	0 0 0 $2
+          did -a q.uc 2 1 $1 $+ 	0 0 0 $2
         }
       }
       elseif ($1- == End of list.) {
@@ -324,8 +324,8 @@ on ^*:notice:*:?:{
             did -ra q.cc 1111 $2
             did -ra q.cc 101 Note: you can only change the flags if you have sufficient privileges! $+ $crlf $+ Current modes: $2
           }
-          did -i q.cc 2 1 headertext + 0 User $nbr($did(q.cc,2).lines) $+ 	+c 0 Modes
-          did -a q.cc 2 1 + 0 0 0 $1 $+ 	0 0 0 $2
+          ; did -i q.cc 2 1 headertext + 0 User $nbr($did(q.cc,2).lines) $+ 	+c 0 Modes
+          did -a q.cc 2 1 $1 $+ 	0 0 0 $2
         }
       }
       elseif ($regex(acccount,$1-,^Total: \d+ \(owner: \d+\x2C master: \d+\x2C op: \d+\x2C voice: \d+\x2C known: \d+\x2C ban: \d+\)\.$)) {
@@ -463,8 +463,8 @@ on *:dialog:q.cc.accadd:*:*:{
 on *:dialog:q.cc:*:*:{
   if ($devent == init) {
     mdx SetControlMDX $dname 2 ListView report showsel single rowselect > $mdxfile(views)
-    did -i $dname 2 1 headerdims 150:1 70:2
-    did -i $dname 2 1 headertext + 0 User	+c 0 Modes
+    ; did -i $dname 2 1 headerdims 150:1 70:2
+    ; did -i $dname 2 1 headertext + 0 User	+c 0 Modes
     did -i $dname 2 1 settxt bgcolor none
     did -b $dname 2
     .timerq.cc.enable 1 5 q.cc.enable

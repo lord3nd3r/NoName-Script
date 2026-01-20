@@ -383,7 +383,7 @@ alias aw.loadpages {
   }
   if (!%z) {
     did -b awaypager 22
-    did -a awaypager 1 + 1 1 0 0 0 No pages received.
+    did -a awaypager 1 No pages received.
   }
   did -ra awaypager 8 Select a page!
   did -ra awaypager 10,13,15 n/a

@@ -492,74 +492,74 @@ on *:dialog:settings:*:*:{
     mdx SetFont $dname 962,963,971,972,281,282,260,259 24 300 Webdings
     mdx SetFont $dname 171 20 700 Tahoma
     mdx SetFont $dname 190,137 40 700 Tahoma
-    did -i $dname 266 1 headerdims 190:1 150:2
-    did -i $dname 266 1 headertext + 0 Name	+ 0 Command
+    ; ; did -i $dname 266 1 headerdims 190:1 150:2
+    ; ; did -i $dname 266 1 headertext + 0 Name	+ 0 Command
     tbedit.reflist
     if ($did(266).lines == 1) { did -b $dname 276 }
-    did -i $dname 257 1 headerdims 200:1 130:2
-    did -i $dname 257 1 headertext + 0 Text	+ 0 Command on click
-    did -i $dname 110 1 headerdims 100:1 40:2 40:3 260:4
-    did -i $dname 110 1 headertext + 0 Protection	+c 0 Times	+c 0 Seconds	+ 0 Action(s)
-    did -i $dname 79 1 headerdims 195:1 150:2
-    did -i $dname 79 1 headertext + 0 Command	+r 0 Key/Action
-    did -i $dname 224 1 headerdims 180:1 225:2
-    did -i $dname 26 1 headerdims 90:1 330:2
-    did -i $dname 26 1 headertext +r 0 Identifier	+ 0 Description
+    ; ; did -i $dname 257 1 headerdims 200:1 130:2
+    ; ; did -i $dname 257 1 headertext + 0 Text	+ 0 Command on click
+    ; ; did -i $dname 110 1 headerdims 100:1 40:2 40:3 260:4
+    ; ; did -i $dname 110 1 headertext + 0 Protection	+c 0 Times	+c 0 Seconds	+ 0 Action(s)
+    ; ; did -i $dname 79 1 headerdims 195:1 150:2
+    ; ; did -i $dname 79 1 headertext + 0 Command	+r 0 Key/Action
+    ; ; did -i $dname 224 1 headerdims 180:1 225:2
+    ; ; did -i $dname 26 1 headerdims 90:1 330:2
+    ; ; did -i $dname 26 1 headertext +r 0 Identifier	+ 0 Description
     loadidents $dname 26
     did -i $dname 224,266,257 1 settxt bgcolor none
     did -i $dname 1 1 cb root
     did -a $dname 1 +fseb 1 1 0 0 0 Settings
     did -i $dname 1 1 cb last
-    did -a $dname 1 + 1 1 0 0 0 Awaysystem
+    did -a $dname 1 Awaysystem
     did -i $dname 1 1 cb last
-    did -a $dname 1 + 1 1 0 0 0 Log/Pager
-    did -a $dname 1 + 1 1 0 0 0 Messages
-    did -a $dname 1 + 1 1 0 0 0 Misc.
-    did -a $dname 1 + 1 1 0 0 0 Presets
+    did -a $dname 1 Log/Pager
+    did -a $dname 1 Messages
+    did -a $dname 1 Misc.
+    did -a $dname 1 Presets
     did -i $dname 1 1 cb up
-    did -a $dname 1 + 1 1 0 0 0 Content filter
-    did -a $dname 1 + 1 1 0 0 0 Copy & paste
-    did -a $dname 1 + 1 1 0 0 0 Favorite networks
-    did -a $dname 1 + 1 1 0 0 0 Games
-    did -a $dname 1 + 1 1 0 0 0 Key Bindings
-    did -a $dname 1 + 1 1 0 0 0 Mail-check
-    did -a $dname 1 + 1 1 0 0 0 Messages
+    did -a $dname 1 Content filter
+    did -a $dname 1 Copy & paste
+    did -a $dname 1 Favorite networks
+    did -a $dname 1 Games
+    did -a $dname 1 Key Bindings
+    did -a $dname 1 Mail-check
+    did -a $dname 1 Messages
     did -i $dname 1 1 cb last
-    did -a $dname 1 + 1 1 0 0 0 Kicks
-    did -a $dname 1 + 1 1 0 0 0 Quits
-    did -a $dname 1 + 1 1 0 0 0 Slaps
+    did -a $dname 1 Kicks
+    did -a $dname 1 Quits
+    did -a $dname 1 Slaps
     did -i $dname 1 1 cb up
-    did -a $dname 1 + 1 1 0 0 0 Miscellaneous
+    did -a $dname 1 Miscellaneous
     did -i $dname 1 1 cb last
-    did -a $dname 1 + 1 1 0 0 0 Part I
-    did -a $dname 1 + 1 1 0 0 0 Part II
+    did -a $dname 1 Part I
+    did -a $dname 1 Part II
     did -i $dname 1 1 cb up
-    did -a $dname 1 + 1 1 0 0 0 Network services
+    did -a $dname 1 Network services
     did -i $dname 1 1 cb last
-    did -a $dname 1 + 1 1 0 0 0 C/NServ
-    did -a $dname 1 + 1 1 0 0 0 GameSurge
-    did -a $dname 1 + 1 1 0 0 0 QuakeNet
-    did -a $dname 1 + 1 1 0 0 0 UnderNet
+    did -a $dname 1 C/NServ
+    did -a $dname 1 GameSurge
+    did -a $dname 1 QuakeNet
+    did -a $dname 1 UnderNet
     did -i $dname 1 1 cb up
-    did -a $dname 1 + 1 1 0 0 0 Newstickers
-    did -a $dname 1 + 1 1 0 0 0 Protections
+    did -a $dname 1 Newstickers
+    did -a $dname 1 Protections
     did -i $dname 1 1 cb last
-    did -a $dname 1 + 1 1 0 0 0 Channel
-    did -a $dname 1 + 1 1 0 0 0 Personal
-    did -a $dname 1 + 1 1 0 0 0 Excludes
+    did -a $dname 1 Channel
+    did -a $dname 1 Personal
+    did -a $dname 1 Excludes
     did -i $dname 1 1 cb up
-    did -a $dname 1 + 1 1 0 0 0 Status bar
-    did -a $dname 1 + 1 1 0 0 0 Themes
-    did -a $dname 1 + 1 1 0 0 0 Titlebar
-    did -a $dname 1 + 1 1 0 0 0 Toolbar
+    did -a $dname 1 Status bar
+    did -a $dname 1 Themes
+    did -a $dname 1 Titlebar
+    did -a $dname 1 Toolbar
     did -i $dname 1 1 cb last
-    did -a $dname 1 + 1 1 0 0 0 Customize
-    did -a $dname 1 + 1 1 0 0 0 Lag bar
+    did -a $dname 1 Customize
+    did -a $dname 1 Lag bar
     did -i $dname 1 1 cb up
     did -ac $dname 112 Preset
     didtok $dname 112 44 %cprot.channels
-    did -i $dname 115 1 headerdims 110:1 40:2 40:3 225:4
-    did -i $dname 115 1 headertext + 0 Protection	+c 0 Times	+c 0 Seconds	+ 0 Action(s)
+    ; ; did -i $dname 115 1 headerdims 110:1 40:2 40:3 225:4
+    ; ; did -i $dname 115 1 headertext + 0 Protection	+c 0 Times	+c 0 Seconds	+ 0 Action(s)
     did -i $dname 115 1 settxt bgcolor none
     cprot.setload
     did -f $dname 1
@@ -1422,7 +1422,7 @@ on *:dialog:settings:*:*:{
       }
       else {
         write scripts\txt\toolbar.txt -
-        did -a $dname 266 0 + 0 0 0 <Separator>	+ 0 0 0
+        did -a $dname 266 0 <Separator>	+ 0 0 0
       }
       did $iif($did(266).sel == 2,-b,-e) $dname 281
       nntoolbar
@@ -1644,7 +1644,7 @@ on *:dialog:settings:*:*:{
         if ($did($did).sel < 33) { %k = $replace(%u,Shift+,s,Control+,c) }
         else { %k = $+(dbc.,$left($gettok(%u,-1,43),1),.,$iif(control isin %u,ctrl,$iif(shift isin %u,shift,def))) }
         if (%c) {
-          did -oc $dname $did $did($did).sel 1 + 0 0 0 %c $+ 	0 0 0 %u
+          did -oc $dname $did $did($did).sel 1 %c $+ 	0 0 0 %u
           set % $+ %k %c
         }
         else {

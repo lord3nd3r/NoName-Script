@@ -31,11 +31,11 @@ dialog dcchist {
 on *:dialog:dcchist:*:*:{
   if ($devent == init) {
     mdx SetControlMDX $dname 2,3,12,13 ListView report showsel rowselect infotip > $mdxfile(views)
-    did -i $dname 2,3,12,13 1 headerdims 140:1 80:2 80:3 130:4 70:5 60:6 120:7
-    did -i $dname 2 1 headertext + 0 Filename	+ 0 Filesize	+ 0 From	+ 0 Time received	+ 0 Speed received	+ 0 Get duration	+ 0 User's IP address
-    did -i $dname 3 1 headertext + 0 Filename	+ 0 Filesize	+ 0 To	+ 0 Time sent	+ 0 Speed sent	+ 0 Send duration	+ 0 User's IP address
-    did -i $dname 12 1 headertext + 0 Filename	+ 0 Received (%)	+ 0 From	+ 0 Time of error	+ 0 Speed received	+ 0 Get duration	+ 0 User's IP address
-    did -i $dname 13 1 headertext + 0 Filename	+ 0 Sent (%)	+ 0 To	+ 0 Time of error	+ 0 Speed sent	+ 0 Send duration	+ 0 User's IP address
+    ; did -i $dname 2,3,12,13 1 headerdims 140:1 80:2 80:3 130:4 70:5 60:6 120:7
+    ; did -i $dname 2 1 headertext + 0 Filename	+ 0 Filesize	+ 0 From	+ 0 Time received	+ 0 Speed received	+ 0 Get duration	+ 0 User's IP address
+    ; did -i $dname 3 1 headertext + 0 Filename	+ 0 Filesize	+ 0 To	+ 0 Time sent	+ 0 Speed sent	+ 0 Send duration	+ 0 User's IP address
+    ; did -i $dname 12 1 headertext + 0 Filename	+ 0 Received (%)	+ 0 From	+ 0 Time of error	+ 0 Speed received	+ 0 Get duration	+ 0 User's IP address
+    ; did -i $dname 13 1 headertext + 0 Filename	+ 0 Sent (%)	+ 0 To	+ 0 Time of error	+ 0 Speed sent	+ 0 Send duration	+ 0 User's IP address
     did -b $dname 15,18
     dcchist.ref
   }
@@ -82,7 +82,7 @@ alias dcchist.ref {
   var %i = 4,%f = g s ig is,%x = 2 3 12 13
   while (%i) {
     var %v = $wd(%x,%i),%z = $+(scripts\txt\dcchist-,$wd(%f,%i),.txt)
-    if (!$lines(%z)) { did -a dcchist %v 1 + 0 0 0 No entries. }
+    if (!$lines(%z)) { did -a dcchist %v 1 No entries. }
     else { loadbuf -o dcchist %v %z }
     dec %i
   }
@@ -98,10 +98,10 @@ alias dcchist.remsel {
   savebuf -o 2- $+ $did(dcchist,%d).lines dcchist %d $+(scripts\txt\dcchist-,$replace(%d,12,ig,13,is,2,g,3,s),.txt)
   dcchist.ref
 }
-on *:filercvd:*:{ write -il1 scripts\txt\dcchist-g.txt 1 + 0 0 0 $+($get(-1).file,	+ 0 0 0 $bytes($get(-1).size,3).suf $iif($get(-1).resumed,$nbr(resumed at $bytes($v1,3).suf)),	+ 0 0 0 $get(-1),	+ 0 0 0 $time(dd.mm.yyyy $+ $chr(44) HH:nn:ss),	+ 0 0 0 $bytes($get(-1).cps,3).suf,/s	+ 0 0 0 $sduration($get(-1).secs),	+) 0 0 0 $get(-1).ip }
-on *:filesent:*:{ write -il1 scripts\txt\dcchist-s.txt 1 + 0 0 0 $+($send(-1).file,	+ 0 0 0 $bytes($send(-1).size,3).suf $iif($send(-1).resumed,$nbr(resumed at $bytes($v1,3).suf)),	+ 0 0 0 $send(-1),	+ 0 0 0 $time(dd.mm.yyyy $+ $chr(44) HH:nn:ss),	+ 0 0 0 $bytes($send(-1).cps,3).suf,/s	+ 0 0 0 $sduration($send(-1).secs),	+) 0 0 0 $send(-1).ip }
-on *:getfail:*:{ write -il1 scripts\txt\dcchist-ig.txt 1 + 0 0 0 $+($get(-1).file,	+ 0 0 0 $bytes($get(-1).rcvd,3).suf,/,$bytes($get(-1).size,3).suf $nbr($get(-1).pc $+ %) $iif($get(-1).resumed,$nbr(resumed at $bytes($v1,3).suf)),	+ 0 0 0 $get(-1),	+ 0 0 0 $time(dd.mm.yyyy $+ $chr(44) HH:nn:ss),	+ 0 0 0 $bytes($get(-1).cps,3).suf,/s	+ 0 0 0 $sduration($get(-1).secs),	+) 0 0 0 $get(-1).ip }
-on *:sendfail:*:{ write -il1 scripts\txt\dcchist-is.txt 1 + 0 0 0 $+($send(-1).file,	+ 0 0 0 $bytes($send(-1).sent,3).suf,/,$bytes($send(-1).size,3).suf $nbr($send(-1).pc $+ %) $iif($send(-1).resumed,$nbr(resumed at $bytes($v1,3).suf)),	+ 0 0 0 $send(-1),	+ 0 0 0 $time(dd.mm.yyyy $+ $chr(44) HH:nn:ss),	+ 0 0 0 $bytes($send(-1).cps,3).suf,/s	+ 0 0 0 $sduration($send(-1).secs),	+) 0 0 0 $send(-1).ip }
+on *:filercvd:*:{ write -il1 scripts\txt\dcchist-g.txt 1 $+($get(-1).file,	$bytes($get(-1).size,3).suf $iif($get(-1).resumed,$nbr(resumed at $bytes($v1,3).suf)),	$get(-1),	$time(dd.mm.yyyy $+ $chr(44) HH:nn:ss),	$bytes($get(-1).cps,3).suf,/s	$sduration($get(-1).secs),	+) 0 0 0 $get(-1).ip }
+on *:filesent:*:{ write -il1 scripts\txt\dcchist-s.txt 1 $+($send(-1).file,	$bytes($send(-1).size,3).suf $iif($send(-1).resumed,$nbr(resumed at $bytes($v1,3).suf)),	$send(-1),	$time(dd.mm.yyyy $+ $chr(44) HH:nn:ss),	$bytes($send(-1).cps,3).suf,/s	$sduration($send(-1).secs),	+) 0 0 0 $send(-1).ip }
+on *:getfail:*:{ write -il1 scripts\txt\dcchist-ig.txt 1 $+($get(-1).file,	$bytes($get(-1).rcvd,3).suf,/,$bytes($get(-1).size,3).suf $nbr($get(-1).pc $+ %) $iif($get(-1).resumed,$nbr(resumed at $bytes($v1,3).suf)),	$get(-1),	$time(dd.mm.yyyy $+ $chr(44) HH:nn:ss),	$bytes($get(-1).cps,3).suf,/s	$sduration($get(-1).secs),	+) 0 0 0 $get(-1).ip }
+on *:sendfail:*:{ write -il1 scripts\txt\dcchist-is.txt 1 $+($send(-1).file,	$bytes($send(-1).sent,3).suf,/,$bytes($send(-1).size,3).suf $nbr($send(-1).pc $+ %) $iif($send(-1).resumed,$nbr(resumed at $bytes($v1,3).suf)),	$send(-1),	$time(dd.mm.yyyy $+ $chr(44) HH:nn:ss),	$bytes($send(-1).cps,3).suf,/s	$sduration($send(-1).secs),	+) 0 0 0 $send(-1).ip }
 alias kbhist { nndlg -m kbhist }
 dialog kbhist {
   title "Kick/ban history [/kbhist]"
@@ -127,9 +127,9 @@ dialog kbhist {
 on *:dialog:kbhist:*:*:{
   if ($devent == init) {
     mdx SetControlMDX $dname 2,8 ListView report showsel rowselect > $mdxfile(views)
-    did -i $dname 2,8 1 headerdims 110:1 80:2 80:3 140:4
-    did -i $dname 2 1 headertext + 0 Date	+ 0 Channel	+ 0 Nick	+ 0 Reason
-    did -i $dname 8 1 headertext + 0 Date	+ 0 Channel	+ 0 Affected users	+ 0 Mask
+    ; did -i $dname 2,8 1 headerdims 110:1 80:2 80:3 140:4
+    ; did -i $dname 2 1 headertext + 0 Date	+ 0 Channel	+ 0 Nick	+ 0 Reason
+    ; did -i $dname 8 1 headertext + 0 Date	+ 0 Channel	+ 0 Affected users	+ 0 Mask
     did -b $dname 13,6
     kbhist.refresh
   }
@@ -174,9 +174,9 @@ alias kbhist.clear {
 }
 alias kbhist.refresh {
   if ($lines(scripts\txt\kickhist.txt)) { loadbuf -ro kbhist 2 scripts\txt\kickhist.txt }
-  else { did -ra kbhist 2 1 + 0 0 0 No entries. }
+  else { did -ra kbhist 2 1 No entries. }
   if ($lines(scripts\txt\banhist.txt)) { loadbuf -ro kbhist 8 scripts\txt\banhist.txt }
-  else { did -ra kbhist 8 1 + 0 0 0 No entries. }
+  else { did -ra kbhist 8 1 No entries. }
   did $iif($did(kbhist,4),-e,-b) kbhist 3
 }
 alias kbhist.entries { return $calc($lines(scripts\txt\kickhist.txt) + $lines(scripts\txt\banhist.txt)) }
@@ -197,10 +197,10 @@ on *:ban:#:{
       }
       dec %i
     }
-    write -il1 scripts\txt\banhist.txt 1 + 0 0 0 $+($asctime(dd.mm.yy $+ $chr(44) HH:nn:ss),	+ 0 0 0 $chan,	+ 0 0 0 $replace(%r,$chr(32),$chr(44) $+ $chr(32)),	+ 0 0 0 $banmask)
+    write -il1 scripts\txt\banhist.txt 1 $+($asctime(dd.mm.yy $+ $chr(44) HH:nn:ss),	$chan,	$replace(%r,$chr(32),$chr(44) $+ $chr(32)),	$banmask)
   }
 }
-on *:kick:#:{ if ($nick == $me) { write -il1 scripts\txt\kickhist.txt 1 + 0 0 0 $+($asctime(dd.mm.yy $+ $chr(44) HH:nn:ss),	+ 0 0 0 $chan,	+ 0 0 0 $knick,	+ 0 0 0 $strip($1-)) } }
+on *:kick:#:{ if ($nick == $me) { write -il1 scripts\txt\kickhist.txt 1 $+($asctime(dd.mm.yy $+ $chr(44) HH:nn:ss),	$chan,	$knick,	$strip($1-)) } }
 on *:active:*:{
   if ($dialog(dcchist)) {
     var %d = $calc($dialog($v1).tab -1000)

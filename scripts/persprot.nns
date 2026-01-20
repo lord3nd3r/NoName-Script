@@ -61,7 +61,7 @@ on *:dialog:pprot.edit:*:*:{
       var %v = 1,%z = $numtok($ [ $+ [ %i ] ],43)
       while (%v <= %z) {
         var %u = $gettok($gettok($ [ $+ [ %i ] ],2-,58),%v,43)
-        if (%u) { did -a $dname 7 + 1 1 0 0 0 $+($prot.naction(%u),	,%u) }
+        if (%u) { did -a $dname 7 $+($prot.naction(%u),	,%u) }
         inc %v
       }
       did -i $dname 7 1 cb up
@@ -78,7 +78,7 @@ on *:dialog:pprot.edit:*:*:{
           set %pprot. $+ %t $+ .times $did(5)
           set %pprot. $+ %t $+ .secs $did(6)
         }
-        did -o settings 110 $did(settings,110).sel 0 +fs 0 0 $calc($did(14).state +1) $+($cell(settings,110,1),	+ 0 0 0 $did(5),	+ 0 0 0 $iif($did(5) == 1,n/a,$did(6)),	+) 0 0 0 $prot.traction(%r)
+        did -o settings 110 $did(settings,110).sel 0 +fs 0 0 $calc($did(14).state +1) $+($cell(settings,110,1),	$did(5),	$iif($did(5) == 1,n/a,$did(6)),	+) 0 0 0 $prot.traction(%r)
         prot.cleanaction
         dialog -c $dname
       }
@@ -346,7 +346,7 @@ on *:dialog:pp.actionadd:*:*:{
       while ($did(pprot.edit,7).lines > 1) { did -d pprot.edit 7 2 }
       if (%i > 5) { var %wa = 1,%r = $wd(%r,1-5),%i = 5 }
       while (%i) {
-        did -a pprot.edit 7 + 1 1 0 0 0 $+($prot.traction(1: $+ $wd(%r,%i)),	,$wd(%r,%i))
+        did -a pprot.edit 7 $+($prot.traction(1: $+ $wd(%r,%i)),	,$wd(%r,%i))
         dec %i
       }
       did -i pprot.edit 7 1 sort
@@ -386,14 +386,14 @@ alias pprot.loaddef {
   prot.cleanaction
 }
 alias pprot.setload {
-  did -ra settings 110 0 + 0 0 $iif(%pprot.ban,2,1) Ban	+ 0 0 0 n/a	+ 0 0 0 n/a	+ 0 0 0 $prot.traction(%pprot.ban.action)
-  did -a settings 110 0 + 0 0 $iif(%pprot.ctcpflood,2,1) CTCPflood	+ 0 0 0 %pprot.ctcpflood.times $+ 	+ 0 0 0 $iif(%pprot.ctcpflood.times == 1,n/a,%pprot.ctcpflood.secs) $+ 	+ 0 0 0 $prot.traction(%pprot.ctcpflood.action)
-  did -a settings 110 0 + 0 0 $iif(%pprot.highlightflood,2,1) Highlightflood	+ 0 0 0 %pprot.highlightflood.times $+ 	+ 0 0 0 $iif(%pprot.highlightflood.times == 1,n/a,%pprot.highlightflood.secs) $+ 	+ 0 0 0 $prot.traction(%pprot.highlightflood.action)
-  did -a settings 110 0 + 0 0 $iif(%pprot.inviteflood,2,1) Inviteflood	+ 0 0 0 %pprot.inviteflood.times $+ 	+ 0 0 0 $iif(%pprot.inviteflood.times == 1,n/a,%pprot.inviteflood.secs) $+ 	+ 0 0 0 $prot.traction(%pprot.inviteflood.action)
-  did -a settings 110 0 + 0 0 $iif(%pprot.noticeflood,2,1) Noticeflood	+ 0 0 0 %pprot.noticeflood.times $+ 	+ 0 0 0 $iif(%pprot.noticeflood.times == 1,n/a,%pprot.noticeflood.secs) $+ 	+ 0 0 0 $prot.traction(%pprot.noticeflood.action)
-  did -a settings 110 0 + 0 0 $iif(%pprot.queryflood,2,1) Queryflood	+ 0 0 0 %pprot.queryflood.times $+ 	+ 0 0 0 $iif(%pprot.queryflood.times == 1,n/a,%pprot.queryflood.secs) $+ 	+ 0 0 0 $prot.traction(%pprot.queryflood.action)
-  did -a settings 110 0 + 0 0 $iif(%pprot.spam,2,1) Spam	+ 0 0 0 n/a	+ 0 0 0 n/a	+ 0 0 0 $prot.traction(%pprot.spam.action)
-  did -a settings 110 0 + 0 0 $iif(%pprot.textflood,2,1) Textflood	+ 0 0 0 %pprot.textflood.times $+ 	+ 0 0 0 $iif(%pprot.textflood.times == 1,n/a,%pprot.textflood.secs) $+ 	+ 0 0 0 $prot.traction(%pprot.textflood.action)
+  did -ra settings 110 0 + 0 0 $iif(%pprot.ban,2,1) Ban	n/a	n/a	$prot.traction(%pprot.ban.action)
+  did -a settings 110 0 + 0 0 $iif(%pprot.ctcpflood,2,1) CTCPflood	%pprot.ctcpflood.times $+ 	$iif(%pprot.ctcpflood.times == 1,n/a,%pprot.ctcpflood.secs) $+ 	$prot.traction(%pprot.ctcpflood.action)
+  did -a settings 110 0 + 0 0 $iif(%pprot.highlightflood,2,1) Highlightflood	%pprot.highlightflood.times $+ 	$iif(%pprot.highlightflood.times == 1,n/a,%pprot.highlightflood.secs) $+ 	$prot.traction(%pprot.highlightflood.action)
+  did -a settings 110 0 + 0 0 $iif(%pprot.inviteflood,2,1) Inviteflood	%pprot.inviteflood.times $+ 	$iif(%pprot.inviteflood.times == 1,n/a,%pprot.inviteflood.secs) $+ 	$prot.traction(%pprot.inviteflood.action)
+  did -a settings 110 0 + 0 0 $iif(%pprot.noticeflood,2,1) Noticeflood	%pprot.noticeflood.times $+ 	$iif(%pprot.noticeflood.times == 1,n/a,%pprot.noticeflood.secs) $+ 	$prot.traction(%pprot.noticeflood.action)
+  did -a settings 110 0 + 0 0 $iif(%pprot.queryflood,2,1) Queryflood	%pprot.queryflood.times $+ 	$iif(%pprot.queryflood.times == 1,n/a,%pprot.queryflood.secs) $+ 	$prot.traction(%pprot.queryflood.action)
+  did -a settings 110 0 + 0 0 $iif(%pprot.spam,2,1) Spam	n/a	n/a	$prot.traction(%pprot.spam.action)
+  did -a settings 110 0 + 0 0 $iif(%pprot.textflood,2,1) Textflood	%pprot.textflood.times $+ 	$iif(%pprot.textflood.times == 1,n/a,%pprot.textflood.secs) $+ 	$prot.traction(%pprot.textflood.action)
 }
 alias prot.traction {
   tokenize 32 $1

@@ -38,12 +38,12 @@ on *:dialog:nt.add:*:*:{
         hdel rssdone SHA1: $+ %v
         hadd rss %u $calc($wd($did(settings,224).seltext,5) -1) $did(3)
         hdel rss %nt.edit
-        did -o settings 224 $did(settings,224).sel 1 +fs 0 0 $wd($did(settings,224).seltext,5) $did(3) $+ 	+ 0 0 0 %u
+        did -o settings 224 $did(settings,224).sel 1 +fs 0 0 $wd($did(settings,224).seltext,5) $did(3) $+ 	%u
       }
       else {
         hadd rss %u 0 $did(3)
         mdxunsel settings 224
-        did -ac settings 224 1 + 0 0 1 $did(3) $+ 	+ 0 0 0 %u
+        did -ac settings 224 1 $did(3) $+ 	%u
       }
       hsave -ob rss scripts\tables\rss.tbl
       dialog -c $dname

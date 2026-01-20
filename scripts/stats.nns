@@ -42,46 +42,46 @@ alias stat.ref {
   did -ra stat 10 $stat.lastreset ago
   did -r stat 2
   if ($1 == -c) {
-    did -a stat 2 1 + 0 0 0 $bytes(%stat.writtenchars,b) $+ 	+ 0 0 0 Written characters
-    did -a stat 2 1 + 0 0 0 $bytes(%stat.writtenwords,b) $+ 	+ 0 0 0 Written words
-    did -a stat 2 1 + 0 0 0 $bytes(%stat.writtenlines,b) $+ 	+ 0 0 0 Written lines
-    did -a stat 2 1 + 0 0 0 $bytes(%stat.writtenqu,b) $+ 	+ 0 0 0 Questions asked
-    did -a stat 2 1 + 0 0 0 $bytes(%stat.queries,b) $+ 	+ 0 0 0 Queries
-    did -a stat 2 1 + 0 0 0 $bytes(%stat.queriestoday,b) $+ 	+ 0 0 0 Queries today
+    did -a stat 2 1 $bytes(%stat.writtenchars,b) $+ 	Written characters
+    did -a stat 2 1 $bytes(%stat.writtenwords,b) $+ 	Written words
+    did -a stat 2 1 $bytes(%stat.writtenlines,b) $+ 	Written lines
+    did -a stat 2 1 $bytes(%stat.writtenqu,b) $+ 	Questions asked
+    did -a stat 2 1 $bytes(%stat.queries,b) $+ 	Queries
+    did -a stat 2 1 $bytes(%stat.queriestoday,b) $+ 	Queries today
   }
   elseif ($1 == -d) {
-    did -a stat 2 1 + 0 0 0 $bytes(%stat.dccgotfiles,b) $+ 	+ 0 0 0 Files received
-    did -a stat 2 1 + 0 0 0 $bytes(%stat.dccgot,3).suf $+ 	+ 0 0 0 Data received
-    did -a stat 2 1 + 0 0 0 $bytes(%stat.dccsentfiles,b) $+ 	+ 0 0 0 Files sent
-    did -a stat 2 1 + 0 0 0 $bytes(%stat.dccsent,3).suf $+ 	+ 0 0 0 Data sent
+    did -a stat 2 1 $bytes(%stat.dccgotfiles,b) $+ 	Files received
+    did -a stat 2 1 $bytes(%stat.dccgot,3).suf $+ 	Data received
+    did -a stat 2 1 $bytes(%stat.dccsentfiles,b) $+ 	Files sent
+    did -a stat 2 1 $bytes(%stat.dccsent,3).suf $+ 	Data sent
   }
   else {
-    did -a stat 2 1 + 0 0 0 $bytes(%stat.scriptstarts,b) $+ 	+ 0 0 0 Script starts
-    did -a stat 2 1 + 0 0 0 $bytes($calc($script(0) + $alias(0)),b) $+ 	+ 0 0 0 Script files loaded
-    did -a stat 2 1 + 0 0 0 $bytes($stat.scriptlines,b) $+ 	+ 0 0 0 Script lines
-    did -a stat 2 1 + 0 0 0 $bytes(%stat.scriptcrashes,b) $+ 	+ 0 0 0 Abnormal script shutdowns
-    did -a stat 2 1 + 0 0 0 $bytes(%stat.thmload,b) $+ 	+ 0 0 0 Themes loaded
-    did -a stat 2 1 + 0 0 0 $bytes(%stat.connects,b) $+ 	+ 0 0 0 Connects
-    did -a stat 2 1 + 0 0 0 $bytes(%stat.joins,b) $+ 	+ 0 0 0 Channels joined
-    did -a stat 2 1 + 0 0 0 $bytes(%stat.nicks,b) $+ 	+ 0 0 0 Nick changes
-    did -a stat 2 1 + 0 0 0 $bytes(%stat.topicchanges,b) $+ 	+ 0 0 0 Topic changes
-    did -a stat 2 1 + 0 0 0 $bytes(%stat.opped,b) $+ 	+ 0 0 0 Users opped
-    did -a stat 2 1 + 0 0 0 $bytes(%stat.voiced,b) $+ 	+ 0 0 0 Users voiced
-    did -a stat 2 1 + 0 0 0 $bytes(%stat.deopped,b) $+ 	+ 0 0 0 Users deopped
-    did -a stat 2 1 + 0 0 0 $bytes(%stat.devoiced,b) $+ 	+ 0 0 0 Users devoiced
-    did -a stat 2 1 + 0 0 0 $bytes($power,b) $+ 	+ 0 0 0 Users controlled
-    did -a stat 2 1 + 0 0 0 $bytes(%stat.kickcount,b) $+ 	+ 0 0 0 Users kicked
-    did -a stat 2 1 + 0 0 0 $bytes(%stat.bancount,b) $+ 	+ 0 0 0 Users banned
-    did -a stat 2 1 + 0 0 0 $bytes(%stat.skickcount,b) $+ 	+ 0 0 0 Been kicked
-    did -a stat 2 1 + 0 0 0 $bytes(%stat.sbancount,b) $+ 	+ 0 0 0 Been banned
-    did -a stat 2 1 + 0 0 0 $bytes(%stat.away,b) $+ 	+ 0 0 0 Gone away
+    did -a stat 2 1 $bytes(%stat.scriptstarts,b) $+ 	Script starts
+    did -a stat 2 1 $bytes($calc($script(0) + $alias(0)),b) $+ 	Script files loaded
+    did -a stat 2 1 $bytes($stat.scriptlines,b) $+ 	Script lines
+    did -a stat 2 1 $bytes(%stat.scriptcrashes,b) $+ 	Abnormal script shutdowns
+    did -a stat 2 1 $bytes(%stat.thmload,b) $+ 	Themes loaded
+    did -a stat 2 1 $bytes(%stat.connects,b) $+ 	Connects
+    did -a stat 2 1 $bytes(%stat.joins,b) $+ 	Channels joined
+    did -a stat 2 1 $bytes(%stat.nicks,b) $+ 	Nick changes
+    did -a stat 2 1 $bytes(%stat.topicchanges,b) $+ 	Topic changes
+    did -a stat 2 1 $bytes(%stat.opped,b) $+ 	Users opped
+    did -a stat 2 1 $bytes(%stat.voiced,b) $+ 	Users voiced
+    did -a stat 2 1 $bytes(%stat.deopped,b) $+ 	Users deopped
+    did -a stat 2 1 $bytes(%stat.devoiced,b) $+ 	Users devoiced
+    did -a stat 2 1 $bytes($power,b) $+ 	Users controlled
+    did -a stat 2 1 $bytes(%stat.kickcount,b) $+ 	Users kicked
+    did -a stat 2 1 $bytes(%stat.bancount,b) $+ 	Users banned
+    did -a stat 2 1 $bytes(%stat.skickcount,b) $+ 	Been kicked
+    did -a stat 2 1 $bytes(%stat.sbancount,b) $+ 	Been banned
+    did -a stat 2 1 $bytes(%stat.away,b) $+ 	Gone away
   }
 }
 on *:dialog:stat:*:*:{
   if ($devent == init) {
     mdx SetControlMDX $dname 2 ListView report showsel single rowselect infotip > $mdxfile(views)
-    did -i $dname 2 1 headerdims 80:1 180:2
-    did -i $dname 2 1 headertext +r 0 Value	+ 0 Description
+    ; did -i $dname 2 1 headerdims 80:1 180:2
+    ; did -i $dname 2 1 headertext +r 0 Value	+ 0 Description
     did -b $dname 14
     stat.ref
   }

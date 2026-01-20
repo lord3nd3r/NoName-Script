@@ -38,7 +38,7 @@ alias black.edit {
   if (%black.addy) && (%black.comm) {
     hdel black $wd($1,6-)
     hadd black %black.addy %black.comm
-    did -oc black 5 $did(black,5).sel 0 + 0 0 0 %black.addy $+ 	+ 0 0 0 %black.comm
+    did -oc black 5 $did(black,5).sel 0 %black.addy $+ 	%black.comm
     hsave -ob black scripts\tables\black.tbl
     scon -at1 bkacs
   }
@@ -81,7 +81,7 @@ alias black.loadlist {
   var %i = $hget(black,0).item
   if (!%i) { did -b black 17 }
   while (%i) {
-    did -a black 5 0 + 0 0 0 $hget(black,%i).item $+ 	+ 0 0 0 $hget(black,%i).data
+    did -a black 5 0 $hget(black,%i).item $+ 	$hget(black,%i).data
     dec %i
   }
   did -b black 14,16
@@ -89,8 +89,8 @@ alias black.loadlist {
 on *:dialog:black:*:*:{
   if ($devent == init) {
     mdx SetControlMDX $dname 5 ListView report showsel rowselect > $mdxfile(views)
-    did -i $dname 5 1 headerdims 160:1 120:2
-    did -i $dname 5 1 headertext + 0 Mask	+ 0 Comment
+    ; did -i $dname 5 1 headerdims 160:1 120:2
+    ; did -i $dname 5 1 headertext + 0 Mask	+ 0 Comment
     black.loadlist
     if (!%ialupdate) { idialog Warning: the feature that gets all user addresses when you join a channel is currently disabled. Only this feature ensures that all blacklisted users will be kicked after you join/get opped on a channel. If you want to enable it enter /setup and go to "Miscellaneous", "Part II". }
   }
@@ -139,7 +139,7 @@ alias black.add {
       hsave -ob black scripts\tables\black.tbl
       scon -at1 bkacs
       if ($dialog(black)) {
-        did -a black 5 0 + 0 0 0 %black.addy $+ 	+ 0 0 0 %black.comm
+        did -a black 5 0 %black.addy $+ 	%black.comm
         did -e black 17
       }
       else { idialog %black.addy has been added to the blacklist. }

@@ -386,7 +386,7 @@ alias cprot.edsave {
     set %cprot. [ $+ [ %s ] $+ ] . [ $+ [ %t ] $+ ] .times $did(5)
     %z = $did(5)
   }
-  did -o settings 115 $did(settings,115).sel 0 +fs 0 0 $calc($did(14).state +1) $cell(settings,115,1) $+ 	+ 0 0 0 $iif(%z,%z,n/a) $+ 	+ 0 0 0 $iif(%d && %z != 1,%d $+ $iif($1 == -i,*60),n/a) $+ 	+ 0 0 0 $prot.traction(%r) $+  $+ $gettok($did(settings,115).seltext,2-,4)
+  did -o settings 115 $did(settings,115).sel 0 +fs 0 0 $calc($did(14).state +1) $cell(settings,115,1) $+ 	$iif(%z,%z,n/a) $+ 	$iif(%d && %z != 1,%d $+ $iif($1 == -i,*60),n/a) $+ 	$prot.traction(%r) $+  $+ $gettok($did(settings,115).seltext,2-,4)
   prot.cleanaction
 }
 alias cprot.aload {
@@ -400,7 +400,7 @@ alias cprot.aload {
     var %v = 1,%z = $numtok($ [ $+ [ %i ] ],43)
     while (%v <= %z) {
       var %u = $gettok($gettok($ [ $+ [ %i ] ],2-,58),%v,43)
-      if (%u) { did -a $dname 7 + 1 1 0 0 0 $+($prot.naction(%u),	,%u) }
+      if (%u) { did -a $dname 7 $+($prot.naction(%u),	,%u) }
       inc %v
     }
     did -i $dname 7 1 cb up
@@ -469,7 +469,7 @@ alias cprot.setload {
   window -h @cprot.setload
   while ($wd(%x,%i)) {
     var %u = $v1,%t = [ % [ $+ [ %c ] $+ ] . [ $+ [ %u ] $+ ] .times ]
-    echo @cprot.setload 0 + 0 0 $iif( [ % [ $+ [ %c ] $+ ] . [ $+ [ %u ] ] ] ,2,1) %u $+ 	+ 0 0 0 %t $+ 	+ 0 0 0 $iif(%t == 1,n/a, [ % [ $+ [ %c ] $+ ] . [ $+ [ %u ] $+ ] .secs ] ) $+ 	+ 0 0 0 $prot.traction( [ % [ $+ [ %c ] $+ ] . [ $+ [ %u ] $+ ] .action ] )
+    echo @cprot.setload 0 + 0 0 $iif( [ % [ $+ [ %c ] $+ ] . [ $+ [ %u ] ] ] ,2,1) %u $+ 	%t $+ 	$iif(%t == 1,n/a, [ % [ $+ [ %c ] $+ ] . [ $+ [ %u ] $+ ] .secs ] ) $+ 	$prot.traction( [ % [ $+ [ %c ] $+ ] . [ $+ [ %u ] $+ ] .action ] )
     inc %i
   }
   filter -cwo @cprot.setload settings 115
@@ -777,7 +777,7 @@ on *:dialog:cp.actionadd:*:*:{
       while ($did(%d,7).lines > 1) { did -d %d 7 2 }
       if (%i > 5) { var %wa = 1,%r = $wd(%r,1-5),%i = 5 }
       while (%i) {
-        did -a %d 7 + 1 1 0 0 0 $+($prot.traction(1: $+ $wd(%r,%i)),	,$wd(%r,%i))
+        did -a %d 7 $+($prot.traction(1: $+ $wd(%r,%i)),	,$wd(%r,%i))
         dec %i
       }
       did -i %d 7 1 sort
@@ -839,7 +839,7 @@ alias prot.blackadd {
     hadd black $1-
     hsave -ob black scripts\tables\black.tbl
     if ($dialog(black)) {
-      did -a black 5 0 + 0 0 0 $1 $+ 	+ 0 0 0 $2
+      did -a black 5 0 $1 $+ 	$2
       did -e black 17
     }
     scon -at1 bkacs

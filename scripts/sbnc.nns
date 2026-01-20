@@ -122,8 +122,8 @@ alias sbnc.simul {
 on *:dialog:sbnc:*:*:{
   if ($devent == init) {
     mdx SetControlMDX $dname 28 ListView report showsel single infotip rowselect > $mdxfile(views)
-    did -i $dname 28 1 headerdims 20:1 70:2 70:3 90:4 90:5 90:6
-    did -i $dname 28 1 headertext + 0 Status	+ 0 User	+ 0 Nickname	+ 0 Server	+ 0 Real name	+ 0 Last connect
+    ; did -i $dname 28 1 headerdims 20:1 70:2 70:3 90:4 90:5 90:6
+    ; did -i $dname 28 1 headertext + 0 Status	+ 0 User	+ 0 Nickname	+ 0 Server	+ 0 Real name	+ 0 Last connect
     did -i $dname 28 1 settxt bgcolor none
     did -a $dname 30 not connected
     set %sbnc.cid $cid
@@ -359,7 +359,7 @@ alias sbnc.addbwho {
   if (%sbnc.bwhoprog) {
     if ($regex(bwho,$1-,/^(\@|!?)(\*?)(.+)\((.+)\)([^ ]*) \[(.*)\] \[Last Seen: (.+)\] :(.+)$/i) ) {
       var %s = $regml(bwho,6),%r = $regml(bwho,7),%l 
-      did -a sbnc 28 0 + 0 0 0 $regml(bwho,1) $+ 	+ 0 0 0 $regml(bwho,3) $+ 	+ 0 0 0 $regml(bwho,4) $+ 	+ 0 0 0 $iif(%s,%s,unknown) $+ 	+ 0 0 0 $regml(bwho,8) $+ 	+ 0 0 0 $iif(%r,%r,unknown)
+      did -a sbnc 28 0 $regml(bwho,1) $+ 	$regml(bwho,3) $+ 	$regml(bwho,4) $+ 	$iif(%s,%s,unknown) $+ 	$regml(bwho,8) $+ 	$iif(%r,%r,unknown)
       haltdef
     }
   }

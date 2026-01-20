@@ -31,8 +31,8 @@ dialog sbaredit {
 on *:dialog:sbaredit:*:*:{
   if ($devent == init) {
     mdx SetControlMDX $dname 5 ListView report showsel single sortascending rowselect > $mdxfile(views)
-    did -i $dname 5 1 headerdims 80:1 250:2
-    did -i $dname 5 1 headertext +r 0 Identifier	+ 0 Description
+    ; did -i $dname 5 1 headerdims 80:1 250:2
+    ; did -i $dname 5 1 headertext +r 0 Identifier	+ 0 Description
     loadidents $dname 5
     if (%sbar.edit) {
       tokenize 1 %sbar.cell. [ $+ [ $v1 ] ]
@@ -64,10 +64,10 @@ alias sbar.reflist {
   while (%j <= %i) {
     tokenize 1 %sbar.cell. [ $+ [ %j ] ]
     var %t = $iif($2 != &null,$2,n/a),%n = $iif($3 != &null,$3,n/a)
-    if ($1 == &null) { aline @sbar.ref 0 + 0 0 0 %t $+ 	+ 0 0 0 %n }
+    if ($1 == &null) { aline @sbar.ref 0 %t $+ 	%n }
     else {
       did -i settings 257 1 seticon normal 0 $mkfullfn($1).noqt
-      aline @sbar.ref 0 $iif(%pr == %c,+fs,+) %c 0 0 %t $+ 	+ 0 0 0 %n
+      aline @sbar.ref 0 $iif(%pr == %c,+fs,+) %c 0 0 %t $+ 	%n
       inc %c
     }
     inc %j

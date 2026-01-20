@@ -655,8 +655,8 @@ dbclick {
 }
 mailnum { return $iif(%email.checker,$iif($int(%mail.curin) isnum,$v1,n/a),n/a) }
 loadidents {
-  didtok $1-2 44 1 + 0 0 0 <cb>	+ 0 0 0 The amount of lines and data currently in your clipboard,1 + 0 0 0 <cbcontent>	+ 0 0 0 The first three lines currently in your clipboard,1 + 0 0 0 <channels>	+ 0 0 0 The number of channels you have joined on the current connection,1 + 0 0 0 <contime>	+ 0 0 0 The duration you have been connected to the current server,1 + 0 0 0 <date>	+ 0 0 0 The current date,1 + 0 0 0 <down>	+ 0 0 0 You current DCC download bandwidth,1 + 0 0 0 <idle>	+ 0 0 0 Your current idle time,1 + 0 0 0 <ip>	+ 0 0 0 Your current IP address,1 + 0 0 0 <lag>	+ 0 0 0 Your lag on the current server in milliseconds,1 + 0 0 0 <mircver>	+ 0 0 0 The mIRC version you're using,1 + 0 0 0 <net>	+ 0 0 0 The network you're currently connected to,1 + 0 0 0 <nick>	+ 0 0 0 Your current nickname,1 + 0 0 0 <nnver>	+ 0 0 0 The NoNameScript version you're using,1 + 0 0 0 <rss>	+ 0 0 0 The latest RSS news received
-  didtok $1-2 44 1 + 0 0 0 <time>	+ 0 0 0 The current time,1 + 0 0 0 <topic>	+ 0 0 0 The topic in the active channel (if any),1 + 0 0 0 <up>	+ 0 0 0 You current DCC upload bandwidth,1 + 0 0 0 <uptime>	+ 0 0 0 Your system uptime,1 + 0 0 0 <mails>	+ 0 0 0 The number of mails in your inbox. Mail-checker must be enabled.
+  didtok $1-2 44 1 <cb>	The amount of lines and data currently in your clipboard,1 <cbcontent>	The first three lines currently in your clipboard,1 <channels>	The number of channels you have joined on the current connection,1 <contime>	The duration you have been connected to the current server,1 <date>	The current date,1 <down>	You current DCC download bandwidth,1 <idle>	Your current idle time,1 <ip>	Your current IP address,1 <lag>	Your lag on the current server in milliseconds,1 <mircver>	The mIRC version you're using,1 <net>	The network you're currently connected to,1 <nick>	Your current nickname,1 <nnver>	The NoNameScript version you're using,1 <rss>	The latest RSS news received
+  didtok $1-2 44 1 <time>	The current time,1 <topic>	The topic in the active channel (if any),1 <up>	You current DCC upload bandwidth,1 <uptime>	Your system uptime,1 <mails>	The number of mails in your inbox. Mail-checker must be enabled.
 }
 replaceidents {
   var %s
@@ -770,10 +770,10 @@ dccstats.ref {
       if ($send(0)) {
         window -h @dccstats.ref
         while (%i <= $send(0)) {
-          if ($send(%i).done) { echo @dccstats.ref 1 + 0 0 0 $+($send(%i).file,	0 0 0 $send(%i),	0 0 0 $sduration($send(%i).secs).nosec,	0 0 0 $bytes($send(%i).cps,3).suf,/s	0 0 0 $bytes($send(%i).size,3).suf,	0) 0 0 Done. }
-          elseif ($istok(waiting inactive failed,$send(%i).status,32)) { echo @dccstats.ref 1 + 0 0 0 $+($send(%i).file,	0 0 0 $send(%i),	0 0 0 $sduration($send(%i).secs).nosec,	0 0 0 $bytes($send(%i).cps,3).suf,/s	0 0 0 $bytes($send(%i).size,3).suf,	0) 0 0 $cap($send(%i).status) }
+          if ($send(%i).done) { echo @dccstats.ref 1 $+($send(%i).file,	0 0 0 $send(%i),	0 0 0 $sduration($send(%i).secs).nosec,	0 0 0 $bytes($send(%i).cps,3).suf,/s	0 0 0 $bytes($send(%i).size,3).suf,	0) 0 0 Done. }
+          elseif ($istok(waiting inactive failed,$send(%i).status,32)) { echo @dccstats.ref 1 $+($send(%i).file,	0 0 0 $send(%i),	0 0 0 $sduration($send(%i).secs).nosec,	0 0 0 $bytes($send(%i).cps,3).suf,/s	0 0 0 $bytes($send(%i).size,3).suf,	0) 0 0 $cap($send(%i).status) }
           else {
-            echo @dccstats.ref 1 + 0 0 0 $+($send(%i).file,	0 0 0 $send(%i),	0 0 0 $sduration($send(%i).secs).nosec,	0 0 0 $bytes($send(%i).cps,3).suf,/s	0 0 0 $bytes($send(%i).size,3).suf,	0 0 0 $bytes($send(%i).sent,3).suf $nbr($send(%i).pc $+ %),	0) 0 0 $sduration($calc(($send(%i).size - $send(%i).sent)/ $send(%i).cps)).nosec
+            echo @dccstats.ref 1 $+($send(%i).file,	0 0 0 $send(%i),	0 0 0 $sduration($send(%i).secs).nosec,	0 0 0 $bytes($send(%i).cps,3).suf,/s	0 0 0 $bytes($send(%i).size,3).suf,	0 0 0 $bytes($send(%i).sent,3).suf $nbr($send(%i).pc $+ %),	0) 0 0 $sduration($calc(($send(%i).size - $send(%i).sent)/ $send(%i).cps)).nosec
             var %x = 1
           }
           inc %i
@@ -781,17 +781,17 @@ dccstats.ref {
       }
       else {
         did -r dccstats 20
-        did -a dccstats 20 1 + 0 0 0 No sends!
+        did -a dccstats 20 1 No sends!
       }
     }
     else {
       if ($get(0)) {
         window -h @dccstats.ref
         while (%i <= $get(0)) {
-          if ($get(%i).done) { echo @dccstats.ref 1 + 0 0 0 $+($get(%i).file,	0 0 0 $get(%i),	0 0 0 $sduration($get(%i).secs).nosec,	0 0 0 $bytes($get(%i).cps,3).suf,/s	0 0 0 $bytes($get(%i).size,3).suf,	0) 0 0 Done. }
-          elseif ($istok(waiting inactive failed,$get(%i).status,32)) { echo @dccstats.ref 1 + 0 0 0 $+($get(%i).file,	0 0 0 $get(%i),	0 0 0 $sduration($get(%i).secs).nosec,	0 0 0 $bytes($get(%i).cps,3).suf,/s	0 0 0 $bytes($get(%i).size,3).suf,	0) 0 0 $cap($get(%i).status) }
+          if ($get(%i).done) { echo @dccstats.ref 1 $+($get(%i).file,	0 0 0 $get(%i),	0 0 0 $sduration($get(%i).secs).nosec,	0 0 0 $bytes($get(%i).cps,3).suf,/s	0 0 0 $bytes($get(%i).size,3).suf,	0) 0 0 Done. }
+          elseif ($istok(waiting inactive failed,$get(%i).status,32)) { echo @dccstats.ref 1 $+($get(%i).file,	0 0 0 $get(%i),	0 0 0 $sduration($get(%i).secs).nosec,	0 0 0 $bytes($get(%i).cps,3).suf,/s	0 0 0 $bytes($get(%i).size,3).suf,	0) 0 0 $cap($get(%i).status) }
           else {
-            echo @dccstats.ref 1 + 0 0 0 $+($get(%i).file,	0 0 0 $get(%i),	0 0 0 $sduration($get(%i).secs).nosec,	0 0 0 $bytes($get(%i).cps,3).suf,/s	0 0 0 $bytes($get(%i).size,3).suf,	0 0 0 $bytes($get(%i).rcvd,3).suf $nbr($get(%i).pc $+ %),	0) 0 0 $sduration($calc(($get(%i).size - $get(%i).rcvd)/ $get(%i).cps)).nosec
+            echo @dccstats.ref 1 $+($get(%i).file,	0 0 0 $get(%i),	0 0 0 $sduration($get(%i).secs).nosec,	0 0 0 $bytes($get(%i).cps,3).suf,/s	0 0 0 $bytes($get(%i).size,3).suf,	0 0 0 $bytes($get(%i).rcvd,3).suf $nbr($get(%i).pc $+ %),	0) 0 0 $sduration($calc(($get(%i).size - $get(%i).rcvd)/ $get(%i).cps)).nosec
             var %x = 1
           }
           inc %i
@@ -799,7 +799,7 @@ dccstats.ref {
       }
       else {
         did -r dccstats 20
-        did -ra dccstats 20 1 + 0 0 0 No gets!
+        did -ra dccstats 20 1 No gets!
       }
     }
     did -ra dccstats 21 $iif($get(0) == 1,1 get,$get(0) gets) $+ , $iif($send(0) == 1,1 send,$send(0) sends)
@@ -971,8 +971,8 @@ fkey.ref {
   var %r,%i = 1,%s = F1 F2 F3 F4 F5 F6 F7 F8 F9 F10 F11 F12 SF1 SF2 SF3 SF4 SF5 SF6 SF7 SF8 SF9 SF10 SF11 SF12 CF6 CF7 CF8 CF9 CF10 CF11 CF12 Nicklist Control+Nicklist Shift+Nicklist Channel Control+Channel Shift+Channel Query Control+Query Shift+Query Status Control+Status Shift+Status
   while ($wd(%s,%i)) {
     %r = $v1
-    if (%i < 32) { did -a settings 79 1 + 0 0 0 % [ $+ [ %r ] ] $+ 	0 0 0 $replace(%r,s,Shift+,c,Control+) }
-    else { did -a settings 79 1 + 0 0 0 %dbc. [ $+ [ $left($gettok(%r,-1,43),1) ] $+ ] . [ $+ [ $iif(control isin %r,ctrl,$iif(shift isin %r,shift,def))) ] ] $+ 	0 0 0 %r doubleclick }
+    if (%i < 32) { did -a settings 79 1 % [ $+ [ %r ] ] $+ 	0 0 0 $replace(%r,s,Shift+,c,Control+) }
+    else { did -a settings 79 1 %dbc. [ $+ [ $left($gettok(%r,-1,43),1) ] $+ ] . [ $+ [ $iif(control isin %r,ctrl,$iif(shift isin %r,shift,def))) ] ] $+ 	0 0 0 %r doubleclick }
     inc %i
   }
   did -v settings 79
@@ -1492,7 +1492,7 @@ sortmdx {
     mdxunsel $dname $did /s
     filter $iif(%sortheader. [ $+ [ $dname ] $+ ] . [ $+ [ $did ] ] == %x,-cwoet,-cwot) %x 9 %w $dname $did *
     close -@ %w
-    did -i $dname $did 1 page headertext
+    ; did -i $dname $did 1 page headertext
     noop $regsub($puttok($remove($wd($did($did,1),2-),(asc.),(desc.)),$remove($iif(%x == 1,$wd($gettok($did($did,1),%x,9),2-),$gettok($did($did,1),%x,9)),(asc.),(desc.)) $nbr($iif(%sortheader. [ $+ [ $dname ] $+ ] . [ $+ [ $did ] ] == %x,desc.,asc.)),%x,9),/(\+[clr]) 1/g,\1 0,%r)
     did -i $dname $did 1 %r
     if (%sortheader. [ $+ [ $dname ] $+ ] . [ $+ [ $did ] ] != %x) { set $+(%,sortheader.,$dname,.,$did) %x }

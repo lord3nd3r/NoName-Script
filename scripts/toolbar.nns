@@ -227,20 +227,20 @@ alias tbedit.reflist {
   while (!$feof) {
     tokenize 1 $fread(tb)
     if ($1- != $null) {
-      if ($1- == -) { echo @reflist 0 + 0 0 0 <Separator> }
+      if ($1- == -) { echo @reflist 0 <Separator> }
       elseif ($2 == <infobox>) {
         did -i settings 266 1 seticon normal 0 $mircdir $+ iconsets\megapack\info.ico
-        echo @reflist 0 + %i 0 0 $1 $+ 	+ 0 0 0 $3
+        echo @reflist 0 + %i 0 0 $1 $+ 	$3
         inc %i
       }
       elseif ($2 == <lagbar>) {
         did -i settings 266 1 seticon normal 0 $mircdir $+ iconsets\megapack\calc.ico
-        echo @reflist 0 + %i 0 0 $1 $+ 	+ 0 0 0 $3
+        echo @reflist 0 + %i 0 0 $1 $+ 	$3
         inc %i
       }
       else {
         did -i settings 266 1 seticon normal 0 $mkfullfn($3).noqt
-        echo @reflist 0 + %i 0 0 $1 $+ 	+ 0 0 0 $2
+        echo @reflist 0 + %i 0 0 $1 $+ 	$2
         inc %i
       }
     }

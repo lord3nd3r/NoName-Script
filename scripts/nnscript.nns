@@ -285,8 +285,8 @@ on *:dialog:dccfin.sd:*:*:{
 on *:dialog:dccstats:*:*:{
   if ($devent == init) {
     mdx SetControlMDX $dname 20 ListView report showsel nosortheader single rowselect > $mdxfile(views)
-    did -i $dname 20 1 headerdims 100:1 60:2 60:3 60:4 52:5 85:6 60:7
-    did -i $dname 20 1 headertext + 0 Filename	+ 0 Nick	+ 0 Elapsed	+ 0 Rate	+ 0 Size	+ 0 Status	+ 0 Time left
+    ; did -i $dname 20 1 headerdims 100:1 60:2 60:3 60:4 52:5 85:6 60:7
+    ; did -i $dname 20 1 headertext + 0 Filename	+ 0 Nick	+ 0 Elapsed	+ 0 Rate	+ 0 Size	+ 0 Status	+ 0 Time left
     did -i $dname 20 1 settxt bgcolor none
     did -c $dname $calc(%curdcc.delay +5)
     if (!$anydcc) { did -b $dname 12 }

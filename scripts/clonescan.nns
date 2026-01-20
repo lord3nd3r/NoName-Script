@@ -84,7 +84,7 @@ alias cscan.do {
   var %m = $nnticks,%x = $did(clonescan,7).seltext,%s = $ialchan(*,%x,0),%c = 0,%v = $nick(%x,0)
   did -ra clonescan 14 %v
   if (%s != %v) {
-    did -a clonescan 6 + 1 1 0 0 0 IAL for %x not filled!
+    did -a clonescan 6 IAL for %x not filled!
     did -bra clonescan 9,11,13 n/a
     did -b clonescan 4,5,6,8,10,12,14,15
   }
@@ -99,11 +99,11 @@ alias cscan.do {
     while (%s) {
       var %l = 1,%t = $hget(clonescan,%s).item,%h = $hget(clonescan,%t)
       if (%h > 1) {
-        did -a clonescan 6 + 1 1 0 0 0 $+($gettok(%t,2-,64),	Host: $gettok(%t,2-,64),$cr,Users:) %h
+        did -a clonescan 6 $+($gettok(%t,2-,64),	Host: $gettok(%t,2-,64),$cr,Users:) %h
         did -i clonescan 6 1 cb last
         while (%l <= %h) {
           var %ö = $ialchan(%t,%x,%l).nick,%g = $iif(%ö !isreg %x,$left($nick(%x,%ö).pnick,1)) $+ %ö
-          did -a clonescan 6 + 1 1 0 0 0 $+(%g,	Nickname: $ialchan(%t,%x,%l).nick,$cr,Clone #: %l,/,%h,$cr,Address: $gettok($ialchan(%t,%x,%l),2-,33),$cr,Idle) time: $sduration($nick(%x,%ö).idle)
+          did -a clonescan 6 $+(%g,	Nickname: $ialchan(%t,%x,%l).nick,$cr,Clone #: %l,/,%h,$cr,Address: $gettok($ialchan(%t,%x,%l),2-,33),$cr,Idle) time: $sduration($nick(%x,%ö).idle)
           inc %l
         }
         did -i clonescan 6 1 sort
@@ -112,7 +112,7 @@ alias cscan.do {
       }
       dec %s
     }
-    if (!%c) { did -a clonescan 6 + 1 1 0 0 0 No clones on %x found. }
+    if (!%c) { did -a clonescan 6 No clones on %x found. }
     else { did -i clonescan 6 1 sort }
     did -ra clonescan 9 %c
     did -ra clonescan 11 $percent(%c,$nick(%x,0),0)

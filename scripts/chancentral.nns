@@ -123,13 +123,13 @@ alias cc.refbans {
     window -h @loadbans
     while (%i) {
       tokenize 33 $ibl(%c,%i).by
-      echo @loadbans 1 + 0 0 0 $ibl(%c,%i) $+ 	+ 0 0 0 $1 $iif($2,$nbr($2)) $+ 	+ 0 0 0 $asctime($ibl(%c,%i).ctime,dd/mm/yyyy HH:nn)
+      echo @loadbans 1 $ibl(%c,%i) $+ 	$1 $iif($2,$nbr($2)) $+ 	$asctime($ibl(%c,%i).ctime,dd/mm/yyyy HH:nn)
       dec %i
     }
     filter -cwo @loadbans chancentral 6
     close -@ @loadbans
   }
-  else { did -ra chancentral 6 1 + 0 0 0 No bans set. }
+  else { did -ra chancentral 6 1 No bans set. }
   if (%maxbans. [ $+ [ $cid ] ]) { did -ra chancentral 49 $+(%t,/,$v1) }
   else { did -ra chancentral 49 %t $+ /unknown }
   cc.checkop
@@ -146,13 +146,13 @@ alias cc.refinvites {
     window -h @loadinvites
     while (%i) {
       tokenize 33 $iil(%c,%i).by
-      echo @loadinvites 1 + 0 0 0 $iil(%c,%i) $+ 	+ 0 0 0 $1 $iif($2,$nbr($2)) $+ 	+ 0 0 0 $asctime($iil(%c,%i).ctime,dd/mm/yyyy HH:nn)
+      echo @loadinvites 1 $iil(%c,%i) $+ 	$1 $iif($2,$nbr($2)) $+ 	$asctime($iil(%c,%i).ctime,dd/mm/yyyy HH:nn)
       dec %i
     }
     filter -cwo @loadinvites chancentral 54
     close -@ @loadinvites
   }
-  else { did -ra chancentral 54 1 + 0 0 0 No invites set. }
+  else { did -ra chancentral 54 1 No invites set. }
   did -ra chancentral 62 %t $+ /unknown
   cc.checkop
 }
@@ -168,13 +168,13 @@ alias cc.refexcepts {
     window -h @loadexcepts
     while (%i) {
       tokenize 33 $iel(%c,%i).by
-      echo @loadexcepts 1 + 0 0 0 $iel(%c,%i) $+ 	+ 0 0 0 $1 $iif($2,$nbr($2)) $+ 	+ 0 0 0 $asctime($iel(%c,%i).ctime,dd/mm/yyyy HH:nn)
+      echo @loadexcepts 1 $iel(%c,%i) $+ 	$1 $iif($2,$nbr($2)) $+ 	$asctime($iel(%c,%i).ctime,dd/mm/yyyy HH:nn)
       dec %i
     }
     filter -cwo @loadexcepts chancentral 55
     close -@ @loadexcepts
   }
-  else { did -ra chancentral 55 1 + 0 0 0 No excepts set. }
+  else { did -ra chancentral 55 1 No excepts set. }
   did -ra chancentral 64 %t $+ /unknown
   cc.checkop
 }
@@ -184,7 +184,7 @@ raw 367:*:{
     haltdef
     if ($dialog(chancentral)) {
       if (* Refreshing bans...	* iswm $did(chancentral,6,2)) { did -d chancentral 6 2 }
-      did -a chancentral 6 0 + 0 0 0 $3 $+ 	+ 0 0 0 $4 $+ 	+ 0 0 0 $asctime($5,dd/mm/yyyy HH:nn)
+      did -a chancentral 6 0 $3 $+ 	$4 $+ 	$asctime($5,dd/mm/yyyy HH:nn)
     }
   }
 }
@@ -194,7 +194,7 @@ raw 368:*:{
     unset %chancentral.getbans
     if ($dialog(chancentral)) {
       if ($did(chancentral,6).lines == 2) && (* Refreshing bans...	* iswm $did(chancentral,6,2)) {
-        did -ra chancentral 6 1 + 0 0 0 No bans set.
+        did -ra chancentral 6 1 No bans set.
         did -ra chancentral 49 0/ $+ $iif(%maxbans. [ $+ [ $cid ] ],$v1,unknown)
       }
       else { did -ra chancentral 49 $calc($did(chancentral,6).lines -1) $+ / $+ $iif(%maxbans. [ $+ [ $cid ] ],$v1,unknown) }
@@ -207,7 +207,7 @@ raw 346:*:{
     haltdef
     if ($dialog(chancentral)) {
       if (* Refreshing invites...	* iswm $did(chancentral,54,2)) { did -d chancentral 54 2 }
-      did -a chancentral 54 0 + 0 0 0 $3 $+ 	+ 0 0 0 $4 $+ 	+ 0 0 0 $asctime($5,dd/mm/yyyy HH:nn)
+      did -a chancentral 54 0 $3 $+ 	$4 $+ 	$asctime($5,dd/mm/yyyy HH:nn)
     }
   }
 }
@@ -217,7 +217,7 @@ raw 347:*:{
     unset %chancentral.getinvites
     if ($dialog(chancentral)) {
       if ($did(chancentral,54).lines == 2) && (* Refreshing invites...	* iswm $did(chancentral,54,2)) {
-        did -ra chancentral 54 1 + 0 0 0 No invites set.
+        did -ra chancentral 54 1 No invites set.
         did -ra chancentral 62 0
       }
       else { did -ra chancentral 62 $calc($did(chancentral,54).lines -1) }
@@ -230,7 +230,7 @@ raw 348:*:{
     haltdef
     if ($dialog(chancentral)) {
       if (* Refreshing excepts...	* iswm $did(chancentral,55,2)) { did -d chancentral 55 2 }
-      did -a chancentral 55 0 + 0 0 0 $3 $+ 	+ 0 0 0 $4 $+ 	+ 0 0 0 $asctime($5,dd/mm/yyyy HH:nn)
+      did -a chancentral 55 0 $3 $+ 	$4 $+ 	$asctime($5,dd/mm/yyyy HH:nn)
     }
   }
 }
@@ -240,7 +240,7 @@ raw 349:*:{
     unset %chancentral.getexcepts
     if ($dialog(chancentral)) {
       if ($did(chancentral,55).lines == 2) && (* Refreshing excepts...	* iswm $did(chancentral,55,2)) {
-        did -ra chancentral 55 1 + 0 0 0 No excepts set.
+        did -ra chancentral 55 1 No excepts set.
         did -ra chancentral 64 0
       }
       else { did -ra chancentral 64 $calc($did(chancentral,55).lines -1) }
@@ -290,13 +290,13 @@ on *:dialog:chancentral:*:*:{
     did -a $dname 40 $iif($chan(%chancentral.chan).mode,$v1,none)
     did -a $dname 48 %chancentral.chan $nbr($nick(%chancentral.chan,0) users)
     did -a $dname 50 $iif($network,$network $nbr($server),$server)
-    did -i $dname 6,54,55 1 headerdims 220:1 80:2 110:3
-    did -i $dname 6,54,55 1 headertext + 0 Address	+ 0 Set by	+ 0 Date
-    did -i $dname 25 1 headerdims 80:1
-    did -i $dname 47 1 headerdims 200:1 60:2 60:3
-    did -i $dname 47 1 headertext + 0 a	+ 0 b + 0 c
-    did -i $dname 46 1 headerdims 40:1 30:2 80:3 80:4 80:5 60:6 110:7 80:8 50:9 50:10
-    did -i $dname 46 1 headertext + 0 User number	+ 0 Status	+ 0 Nick	+ 0 Auth	+ 0 Name	+ 0 Ident	+ 0 Host	+ 0 IP	+ 0 Away	+ 0 IrcOp
+    ; did -i $dname 6,54,55 1 headerdims 220:1 80:2 110:3
+    ; did -i $dname 6,54,55 1 headertext + 0 Address	+ 0 Set by	+ 0 Date
+    ; did -i $dname 25 1 headerdims 80:1
+    ; did -i $dname 47 1 headerdims 200:1 60:2 60:3
+    ; did -i $dname 47 1 headertext + 0 a	+ 0 b + 0 c
+    ; did -i $dname 46 1 headerdims 40:1 30:2 80:3 80:4 80:5 60:6 110:7 80:8 50:9 50:10
+    ; did -i $dname 46 1 headertext + 0 User number	+ 0 Status	+ 0 Nick	+ 0 Auth	+ 0 Name	+ 0 Ident	+ 0 Host	+ 0 IP	+ 0 Away	+ 0 IrcOp
     did -i $dname 6,25,46,47,54,55 1 settxt bgcolor none
     set %chancentral.oldtab 16
     did -ra $dname 49 unknown/ $+ $iif(%maxbans. [ $+ [ $cid ] ],$v1,unknown)
@@ -318,12 +318,12 @@ on *:dialog:chancentral:*:*:{
     }
     cc.refmodes
     cc.checkop
-    did -a $dname 47 1 + 0 0 0 Total users on the channel	+ 0 0 0 %n
-    did -a $dname 47 1 + 0 0 0 Operators	+ 0 0 0 $nick(%chancentral.chan,0,o) $+ 	+ 0 0 0 $percent($nick(%chancentral.chan,0,o),%n,1)
-    did -a $dname 47 1 + 0 0 0 Voiced users	+ 0 0 0 $nick(%chancentral.chan,0,v) $+ 	+ 0 0 0 $percent($nick(%chancentral.chan,0,v),%n,1)
-    did -a $dname 47 1 + 0 0 0 Regulars	+ 0 0 0 $nick(%chancentral.chan,0,r) $+ 	+ 0 0 0 $percent($nick(%chancentral.chan,0,r),%n,1)
-    did -a $dname 47 1 + 0 0 0 Away users	+ 0 0 0 0	+ 0 0 0 0%
-    did -a $dname 47 1 + 0 0 0 IRC operators	+ 0 0 0 0	+ 0 0 0 0%
+    did -a $dname 47 1 Total users on the channel	%n
+    did -a $dname 47 1 Operators	$nick(%chancentral.chan,0,o) $+ 	$percent($nick(%chancentral.chan,0,o),%n,1)
+    did -a $dname 47 1 Voiced users	$nick(%chancentral.chan,0,v) $+ 	$percent($nick(%chancentral.chan,0,v),%n,1)
+    did -a $dname 47 1 Regulars	$nick(%chancentral.chan,0,r) $+ 	$percent($nick(%chancentral.chan,0,r),%n,1)
+    did -a $dname 47 1 Away users	0	0%
+    did -a $dname 47 1 IRC operators	0	0%
     if (%chancentral.stt) {
       var %x = $dialog($dname).x,%y = $dialog($dname).y
       dialog -sp $dname -1000 -1000 -1 -1
@@ -552,13 +552,13 @@ alias chanstats.add {
   var %w = $iif(G isincs $7,Yes,No),%o = $iif(* isin $7,Yes,No)
   if (G isincs $7) {
     var %z = $calc($wd($gettok($did(chancentral,47,6),2,9),5) +1)
-    did -o chancentral 47 6 1 + 0 0 0 Away users	+ 0 0 0 %z $+ 	+ 0 0 0 $percent(%z,$nick($2,0),1)
+    did -o chancentral 47 6 1 Away users	%z $+ 	$percent(%z,$nick($2,0),1)
   }
   if (* isin $7) {
     var %y = $calc($wd($gettok($did(chancentral,47,7),2,9),5) +1)
-    did -o chancentral 47 7 1 + 0 0 0 IRC operators	+ 0 0 0 %y $+ 	+ 0 0 0 $percent(%y,$nick($2,0),1)
+    did -o chancentral 47 7 1 IRC operators	%y $+ 	$percent(%y,$nick($2,0),1)
   }
-  did -a chancentral 46 1 + 0 0 0 $did(chancentral,46).lines $+ .	+ 0 0 0 $iif($6 !isreg $2,$left($nick($2,$6).pnick,1)) $+ 	+ 0 0 0 $6 $+ 	+ 0 0 0 %a $+ 	+ 0 0 0 $strip($9-) $+ 	+ 0 0 0 $3 $+ 	+ 0 0 0 %h $+ 	+ 0 0 0 %p $+ 	+ 0 0 0 %w $+ 	+ 0 0 0 %o
+  did -a chancentral 46 1 $did(chancentral,46).lines $+ .	$iif($6 !isreg $2,$left($nick($2,$6).pnick,1)) $+ 	$6 $+ 	%a $+ 	$strip($9-) $+ 	$3 $+ 	%h $+ 	%p $+ 	%w $+ 	%o
 }
 on *:op:%chancentral.chan:{ if (%chancentral.cid == $cid) && ($opnick == $me) { cc.checkop } }
 on *:deop:%chancentral.chan:{ if (%chancentral.cid == $cid) && ($opnick == $me) { cc.checkop } }
