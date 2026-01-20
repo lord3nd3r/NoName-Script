@@ -170,13 +170,7 @@ on *:start:{
     %upd = 1
     unset %updatefailed
   }
-  if (!$thmvchk(%thm.current)) {
-    if ($thmvchk($thm.def)) {
-      .thm.ldef
-      .timer 1 0 errdialog since the theme file you have previously loaded doesn't exist anymore or is corrupted, the default theme has been loaded.
-    }
-    else { .timer 1 0 errdialog your themes have been corrupted. Please re-install the default theme or NoNameScript. }
-  }
+
   if (%qcls.auto) { .timerqcls -io 0 30 scon -a chkqcls }
   if (%rssticker) { .timernwstick -io 0 $calc(%nwstick.mins *60) newsticker }
   if (%anti.idle) { .timeraidle -io 0 %aidle.max scon -at1 aidle }

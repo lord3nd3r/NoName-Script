@@ -42,3 +42,19 @@ alias thm.import return
 
 ; Fix for missing winpic command causing "not connected to server" errors
 alias winpic return
+
+; Legacy Helpers for Messaging and Variables
+alias thmecho echo $1-
+alias thmhl return $chr(2) $+ $1- $+ $chr(2)
+alias thmdata {
+  if ($2 == name) return KTE-Theme
+  if ($2 == version) return 1.0
+  if ($2 == author) return Unknown
+  return
+}
+alias schmprt return
+alias thmvchk return $true
+alias thm.lrand return
+alias thmupd return
+alias thmls return
+
