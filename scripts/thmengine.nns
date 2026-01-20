@@ -78,6 +78,18 @@ alias fixcolors {
   .timestamp -g 1
   thmecho -s Fallback colors applied.
 }
+
+alias fixcolors.on {
+  set %fixcolors.auto 1
+  .timerfixcolors -o 1 60 fixcolors
+  thmecho -s Fixcolors auto: ON
+}
+
+alias fixcolors.off {
+  unset %fixcolors.auto
+  .timerfixcolors off
+  thmecho -s Fixcolors auto: OFF
+}
 alias thmerror echo $1 $chr(2) $+ $chr(3) $+ 04[Error] $+ $chr(15) $2-
 
 alias debug_log write debughang.txt $1-
