@@ -819,7 +819,10 @@ alias -l kte_imgpos return $mid(cfnrtp, $findtok(center fill normal stretch tile
 
 alias -l kte_status_open return
 alias -l kte_status_close return
-alias -l kte_status_show echo -s 03[Theme Status] $2-
+alias -l kte_status_show {
+  if ($2-) { echo -s 03[Theme Status]  $2- }
+  else { echo -s 03[Theme Status]  (idle) }
+}
 alias -l kte_status_prog return
 
 ; the dialog
