@@ -303,6 +303,12 @@ alias -l kte_out {
 alias -l kte_dobackup {
   var %base, %i = 1, %t = 27, %rgb, %f, %font, %fsize, %base-d = back;action;ctcp;high;info;info2;invite;join;kick;mode;nick;normal;notice; $+ $&
     notify;other;own;part;quit;topic;wallops;whois;edit;editbox t;list;listbox t;gray
+  ; If the current background is very light, apply a dark fallback so backups are readable
+  if ($color(back) > 10000000) {
+    thmecho -s KTE: detected light background, applying dark fallback for backup...
+    fixcolors
+    write -a scripts\kte_debug.txt $asctime: Applied dark fallback via fixcolors before backup
+  }
   saveini
   if (!$hget(Kte_Restore)) { hmake Kte_Restore 8 }
   while (%i <= %t) { %base = %base $+ , $+ $color($gettok(%base-d, %i, 59)) | inc %i }
