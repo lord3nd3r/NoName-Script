@@ -57,4 +57,5 @@ alias thmvchk return $true
 alias thm.lrand return
 alias thmupd return
 alias thmls return
+alias thmerror echo $1 $chr(2) $+ $chr(3) $+ 04[Error] $+ $chr(15) $2-
 

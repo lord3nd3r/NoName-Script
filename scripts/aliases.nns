@@ -108,7 +108,7 @@ nnticks {
   else { return $calc($ticks /1000) }
 }
 loadhash {
-  var %tb = scripts\tables\topichist.tbl scripts\tables\pexclude.tbl scripts\tables\black.tbl scripts\tables\awaypreset.tbl scripts\tables\peaks.tbl scripts\tables\rss.tbl scripts\tables\rssdone.tbl themes\data\vthm.tbl themes\data\thmcmp.tbl themes\data\thmprep.tbl
+  var %tb = scripts\tables\topichist.tbl scripts\tables\pexclude.tbl scripts\tables\black.tbl scripts\tables\awaypreset.tbl scripts\tables\peaks.tbl scripts\tables\rss.tbl scripts\tables\rssdone.tbl
   while (%tb) {
     var %utb = $wd(%tb,1),%t = $left($nopath(%utb),-4)
     _hmake %t
