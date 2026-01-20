@@ -1,53 +1,53 @@
 Name Abyss
-Version 1.0
+Version 2.0
 NNTVersion 1.03
 Author End3r
 Email end3r@localhost
 Homepage https://github.com/lord3nd3r
-Description A deep dark underwater theme.
+Description Deep blue ocean depths.
 
 Font Verdana
 FontSize 11
 
 TimestampEnabled 1
-Timestamp 02[11HH:nn02] 
+Timestamp 02[12HH:nn02] 
 
-NickColSelf 11
-NickColOp 10
-NickColVoice 12
-NickColRegular 0
-NickColProtect 6
-NickColIgnore 14
+NickColSelf 12
+NickColOp 2
+NickColVoice 10
+NickColRegular 11
+NickColProtect 12
+NickColIgnore 1
 
 Brackets 02[<text>02]
-LineSep 02-11=02- 
+LineSep 02~~~~~~~~~~~~~~~~~~~~ 
 
-Prefix 11> 
+Prefix 12> 
 
-GenEcho 11-02- <text>
-GenError 04Error: <text>
-GenHighlight 08<text>
+GenEcho 02- <text>
+GenError 02! <text>
+GenHighlight 02<text>
 
 ChanText 02<<cnickcolor><nick>02> <text>
 ChanTextOwn 02<<cmecolor><me>02> <text>
-ChanAction 11* <cnickcolor><nick> 11<text>
-ChanActionOwn 11* <cmecolor><me> 11<text>
+ChanAction 12* <cnickcolor><nick> 02<text>
+ChanActionOwn 12* <cmecolor><me> 02<text>
 
 QueryText 02<<nick>02> <text>
 QueryTextOwn 02<<me>02> <text>
-QueryAction 11* <nick> 11<text>
-QueryActionOwn 11* <me> 11<text>
+QueryAction 12* <nick> 02<text>
+QueryActionOwn 12* <me> 02<text>
 
 Msg 02<<nick>02> <text>
 MsgOwn 02-> 02<<target>02> <text>
-Action 11* <nick> 11<text>
-ActionOwn 11-> 11* <target> 11<text>
+Action 12* <nick> <text>
+ActionOwn 12-> 12* <target> <text>
 
-ChanNotice 05-<nick>:<chan>05- <text>
-Notice 05-<nick>05- <text>
-NoticeOwn 05-> 05-<target>05- <text>
-ServerNotice 04! <server> 04! <text>
+ChanNotice 12-<nick>:<chan>12- <text>
+Notice 12-<nick>12- <text>
+NoticeOwn 12-> 12-<target>12- <text>
+ServerNotice 02! <server> 02! <text>
 
-CTCP 04[ <nick> <ctcp> 04] <text>
+CTCP 02[ <nick> <ctcp> 02] <text>
 
 Scheme1 Dark 16777215 0 4205603 37632 133117 127 10223772 32764 65535 64512 16756620 15785687 8411206 16711935 8355711 13816530 1 12 12 4 12 12 12 4 4 10 10 14 12 12 6 14 10 10 12 12 12 1 12 1 12 12 6 0 1 12

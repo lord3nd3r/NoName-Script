@@ -1,53 +1,53 @@
 Name Obsidian
-Version 1.0
+Version 2.0
 NNTVersion 1.03
 Author End3r
 Email end3r@localhost
 Homepage https://github.com/lord3nd3r
-Description Sleek purple and black.
+Description Monochrome darkness.
 
 Font Verdana
 FontSize 11
 
 TimestampEnabled 1
-Timestamp 06(13HH:nn06) 
+Timestamp 14[15HH:nn14] 
 
-NickColSelf 13
-NickColOp 6
-NickColVoice 13
-NickColRegular 15
-NickColProtect 5
-NickColIgnore 14
+NickColSelf 14
+NickColOp 15
+NickColVoice 14
+NickColRegular 0
+NickColProtect 15
+NickColIgnore 1
 
-Brackets 06(<text>06)
-LineSep 06- - - 
+Brackets 14[<text>14]
+LineSep 14~~~~~~~~~~~~~~~~~~~~ 
 
-Prefix 13* 
+Prefix 15> 
 
-GenEcho 06* <text>
-GenError 04* <text>
-GenHighlight 13<text>
+GenEcho 14- <text>
+GenError 14! <text>
+GenHighlight 14<text>
 
-ChanText 06<<cnickcolor><nick>06> <text>
-ChanTextOwn 06<<cmecolor><me>06> <text>
-ChanAction 13* <cnickcolor><nick> 06<text>
-ChanActionOwn 13* <cmecolor><me> 06<text>
+ChanText 14<<cnickcolor><nick>14> <text>
+ChanTextOwn 14<<cmecolor><me>14> <text>
+ChanAction 15* <cnickcolor><nick> 14<text>
+ChanActionOwn 15* <cmecolor><me> 14<text>
 
-QueryText 06<<nick>06> <text>
-QueryTextOwn 06<<me>06> <text>
-QueryAction 13* <nick> 06<text>
-QueryActionOwn 13* <me> 06<text>
+QueryText 14<<nick>14> <text>
+QueryTextOwn 14<<me>14> <text>
+QueryAction 15* <nick> 14<text>
+QueryActionOwn 15* <me> 14<text>
 
-Msg 06<<nick>06> <text>
-MsgOwn 06-> 06<<target>06> <text>
-Action 13* <nick> <text>
-ActionOwn 13-> 13* <target> <text>
+Msg 14<<nick>14> <text>
+MsgOwn 14-> 14<<target>14> <text>
+Action 15* <nick> <text>
+ActionOwn 15-> 15* <target> <text>
 
-ChanNotice 13-<nick>:<chan>13- <text>
-Notice 13-<nick>13- <text>
-NoticeOwn 13-> 13-<target>13- <text>
-ServerNotice 04! <server> 04! <text>
+ChanNotice 15-<nick>:<chan>15- <text>
+Notice 15-<nick>15- <text>
+NoticeOwn 15-> 15-<target>15- <text>
+ServerNotice 14! <server> 14! <text>
 
-CTCP 04[ <nick> <ctcp> 04] <text>
+CTCP 14[ <nick> <ctcp> 14] <text>
 
 Scheme1 Dark 16777215 0 4205603 37632 133117 127 10223772 32764 65535 64512 16756620 15785687 8411206 16711935 8355711 13816530 1 12 12 4 12 12 12 4 4 10 10 14 12 12 6 14 10 10 12 12 12 1 12 1 12 12 6 0 1 12

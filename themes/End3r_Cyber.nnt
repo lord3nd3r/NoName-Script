@@ -1,53 +1,53 @@
 Name Cyber
-Version 1.0
+Version 2.0
 NNTVersion 1.03
 Author End3r
 Email end3r@localhost
 Homepage https://github.com/lord3nd3r
-Description High-tech neon green theme.
+Description High-tech neon.
 
-Font Consolas
-FontSize 10
+Font Verdana
+FontSize 11
 
 TimestampEnabled 1
-Timestamp 03<09HH:nn03> 
+Timestamp 10[11HH:nn10] 
 
-NickColSelf 9
-NickColOp 3
-NickColVoice 10
-NickColRegular 15
-NickColProtect 2
-NickColIgnore 14
+NickColSelf 11
+NickColOp 10
+NickColVoice 9
+NickColRegular 12
+NickColProtect 11
+NickColIgnore 1
 
-Brackets 03|<text>03|
-LineSep 03------------------------------ 
+Brackets 10[<text>10]
+LineSep 10~~~~~~~~~~~~~~~~~~~~ 
 
-Prefix 09>>> 
+Prefix 11> 
 
-GenEcho 03:: <text>
-GenError 04!! <text>
-GenHighlight 08<text>
+GenEcho 10- <text>
+GenError 10! <text>
+GenHighlight 10<text>
 
-ChanText 03[<cnickcolor><nick>03] 09<text>
-ChanTextOwn 03[<cmecolor><me>03] 09<text>
-ChanAction 09* <cnickcolor><nick> 03<text>
-ChanActionOwn 09* <cmecolor><me> 03<text>
+ChanText 10<<cnickcolor><nick>10> <text>
+ChanTextOwn 10<<cmecolor><me>10> <text>
+ChanAction 11* <cnickcolor><nick> 10<text>
+ChanActionOwn 11* <cmecolor><me> 10<text>
 
-QueryText 03[<nick>03] 09<text>
-QueryTextOwn 03[<me>03] 09<text>
-QueryAction 09* <nick> 03<text>
-QueryActionOwn 09* <me> 03<text>
+QueryText 10<<nick>10> <text>
+QueryTextOwn 10<<me>10> <text>
+QueryAction 11* <nick> 10<text>
+QueryActionOwn 11* <me> 10<text>
 
-Msg 03[<nick>03] <text>
-MsgOwn 03-> 03[<target>03] <text>
-Action 09* <nick> 03<text>
-ActionOwn 09-> 09* <target> 03<text>
+Msg 10<<nick>10> <text>
+MsgOwn 10-> 10<<target>10> <text>
+Action 11* <nick> <text>
+ActionOwn 11-> 11* <target> <text>
 
-ChanNotice 03-<nick>:<chan>03- <text>
-Notice 03-<nick>03- <text>
-NoticeOwn 03-> 03-<target>03- <text>
-ServerNotice 04! <server> 04! <text>
+ChanNotice 11-<nick>:<chan>11- <text>
+Notice 11-<nick>11- <text>
+NoticeOwn 11-> 11-<target>11- <text>
+ServerNotice 10! <server> 10! <text>
 
-CTCP 04[ <nick> <ctcp> 04] <text>
+CTCP 10[ <nick> <ctcp> 10] <text>
 
 Scheme1 Dark 16777215 0 4205603 37632 133117 127 10223772 32764 65535 64512 16756620 15785687 8411206 16711935 8355711 13816530 1 12 12 4 12 12 12 4 4 10 10 14 12 12 6 14 10 10 12 12 12 1 12 1 12 12 6 0 1 12

@@ -1,53 +1,53 @@
 Name Void
-Version 1.0
+Version 2.0
 NNTVersion 1.03
 Author End3r
 Email end3r@localhost
 Homepage https://github.com/lord3nd3r
-Description Minimalist monochrome.
+Description Purple void of space.
 
-Font Tahoma
+Font Verdana
 FontSize 11
 
 TimestampEnabled 1
-Timestamp 14[15HH:nn14] 
+Timestamp 06[13HH:nn06] 
 
-NickColSelf 0
-NickColOp 15
+NickColSelf 6
+NickColOp 13
 NickColVoice 14
-NickColRegular 1
-NickColProtect 15
-NickColIgnore 14
+NickColRegular 15
+NickColProtect 6
+NickColIgnore 1
 
-Brackets 14[<text>14]
-LineSep 01-------------------- 
+Brackets 06[<text>06]
+LineSep 06~~~~~~~~~~~~~~~~~~~~ 
 
-Prefix 15> 
+Prefix 13> 
 
-GenEcho 14- <text>
-GenError 01! <text>
-GenHighlight 01<text>
+GenEcho 06- <text>
+GenError 06! <text>
+GenHighlight 06<text>
 
-ChanText 14<<cnickcolor><nick>14> <text>
-ChanTextOwn 14<<cmecolor><me>14> <text>
-ChanAction 01* <cnickcolor><nick> 14<text>
-ChanActionOwn 01* <cmecolor><me> 14<text>
+ChanText 06<<cnickcolor><nick>06> <text>
+ChanTextOwn 06<<cmecolor><me>06> <text>
+ChanAction 13* <cnickcolor><nick> 06<text>
+ChanActionOwn 13* <cmecolor><me> 06<text>
 
-QueryText 14<<nick>14> <text>
-QueryTextOwn 14<<me>14> <text>
-QueryAction 01* <nick> 14<text>
-QueryActionOwn 01* <me> 14<text>
+QueryText 06<<nick>06> <text>
+QueryTextOwn 06<<me>06> <text>
+QueryAction 13* <nick> 06<text>
+QueryActionOwn 13* <me> 06<text>
 
-Msg 14<<nick>14> <text>
-MsgOwn 14-> 14<<target>14> <text>
-Action 01* <nick> <text>
-ActionOwn 01-> 01* <target> <text>
+Msg 06<<nick>06> <text>
+MsgOwn 06-> 06<<target>06> <text>
+Action 13* <nick> <text>
+ActionOwn 13-> 13* <target> <text>
 
-ChanNotice 14-<nick>:<chan>14- <text>
-Notice 14-<nick>14- <text>
-NoticeOwn 14-> 14-<target>14- <text>
-ServerNotice 01! <server> 01! <text>
+ChanNotice 13-<nick>:<chan>13- <text>
+Notice 13-<nick>13- <text>
+NoticeOwn 13-> 13-<target>13- <text>
+ServerNotice 06! <server> 06! <text>
 
-CTCP 01[ <nick> <ctcp> 01] <text>
+CTCP 06[ <nick> <ctcp> 06] <text>
 
 Scheme1 Dark 16777215 0 4205603 37632 133117 127 10223772 32764 65535 64512 16756620 15785687 8411206 16711935 8355711 13816530 1 12 12 4 12 12 12 4 4 10 10 14 12 12 6 14 10 10 12 12 12 1 12 1 12 12 6 0 1 12

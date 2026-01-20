@@ -1,5 +1,5 @@
 Name Crimson
-Version 1.0
+Version 2.0
 NNTVersion 1.03
 Author End3r
 Email end3r@localhost
@@ -10,7 +10,7 @@ Font Verdana
 FontSize 11
 
 TimestampEnabled 1
-Timestamp 04{05HH:nn04} 
+Timestamp 04[05HH:nn04] 
 
 NickColSelf 4
 NickColOp 5
@@ -19,7 +19,7 @@ NickColRegular 15
 NickColProtect 4
 NickColIgnore 1
 
-Brackets 04{<text>04}
+Brackets 04[<text>04]
 LineSep 04~~~~~~~~~~~~~~~~~~~~ 
 
 Prefix 05> 
