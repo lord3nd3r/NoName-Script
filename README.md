@@ -31,6 +31,12 @@ Modern mIRC is incompatible with Windows XP-era 32-bit DLLs. This release implem
 - **Deprecated Syntax**: Removed obsolete usages of `drawfill` and invalid `$dll()` calls.
 - **Treebar Logic**: Patched to prevent loading failures when DLLs are missing or incompatible.
 
+### 4. Linux/Wine Enhanced Support
+Running mIRC on Linux via Wine often breaks Windows Management Instrumentation (WMI) calls.
+- **WMI Crash Protection**: The system information module (`sysinfo.nns`) has been completely rewritten to check for WMI availability before execution. It now fails gracefully instead of crashing the script.
+- **Modernized /sysinfo**: The `/sysinfo` command now behaves like modern IRC clients (HexChat), posting information directly to the active window with smart anti-flood delays.
+- **Legacy Dialog**: The original system information dialog is still preserved and accessible via `/sysconfig`.
+
 ## 🛠️ Installation
 
 1.  **Prerequisite**: A clean install of [mIRC](https://www.mirc.com/).
@@ -47,6 +53,7 @@ To guarantee stability, the following compromises were made for the 2026 edition
 | :--- | :--- | :--- |
 | **Chat Essentials** | ✅ **Active** | Core scripting logic is pure MSL and works perfectly. |
 | **Theme Colors** | ✅ **Active** | Rewritten engine handles colors/fonts. |
+| **System Info** | ✅ **Patched** | Rewritten for Wine compatibility; MDX removed. |
 | **Skinned Dialogs** | ❌ **Disabled** | MDX.dll is incompatible with Unicode mIRC. |
 | **Docked Bars** | ❌ **Disabled** | DCX.dll causes immediate crashes on load. |
 | **RSS Parsing** | ❌ **Disabled** | DOMXML.dll is unstable. |
