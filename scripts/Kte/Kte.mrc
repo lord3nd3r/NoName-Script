@@ -325,6 +325,7 @@ alias -l kte_doload {
     %chscheme = %_kte_chscheme, %apply = $hget(Kte_Data, Apply)
   kte_status_open
   kte_status_show 0 Preparing to load...
+  write debug.txt Step 1: Status shown
   %_kte_loading = $true
   if ($isbit(%apply, 1)) || (!%apply) { %apply = 1023 }
   if (!%_kte_chscheme) {
@@ -332,23 +333,31 @@ alias -l kte_doload {
     else { kte_dobackup }
     if (%ofn) { hadd %dat Extracted $true } | else { hdel %dat Extracted }
   }
+  write debug.txt Step 2: Backup done
   .disable #Kte_DefTheme
   window -lhBi %w
   hdel -w %h * | if ($isfile($kte_file(Kte-DefTheme.dat))) { hload -ob %h $kte_file(Kte-DefTheme.dat) }
   loadbuf -tmts %w %fn
+  write debug.txt Step 3: Buffer loaded
   if (%sch) { loadbuf -tScheme $+ %sch %w %fn }
   filter -cwwg %w %w /^[^\x20;]/
+  write debug.txt Step 4: Filter done
   %t = $line(%w, 0)
   while (%i <= %t) { hadd %h $line(%w, %i) | inc %i }
+  write debug.txt Step 5: Hash filled (Lines: %t )
   close -@ %w
   if ($hget(%h, BaseColors) != $null) {
     tokenize 44 $ifmatch
     hadd %h BaseColors $replace($kte_bc($1) $kte_bc($2) $kte_bc($3) $kte_bc($4), $chr(32), $chr(44))
   }
   %_kte_apply = %apply
+  write debug.txt Step 6: Colors check (Bit3: $isbit(%apply, 3) Bit6: $isbit(%apply, 6) )
   if ($isbit(%apply, 3)) || ($isbit(%apply, 6)) { kte_apply_colors }
+  write debug.txt Step 7: Colors done
   if ($isbit(%apply, 5)) { kte_apply_fonts }
+  write debug.txt Step 8: Fonts done
   if ($isbit(%apply, 2)) || ($isbit(%apply, 9)) || ($isbit(%apply, 10)) { kte_apply_bg %fn }
+  write debug.txt Step 9: BG done
   if ($isbit(%apply, 8)) {
     if ($hget(%h, MTSVersion) == 1.0) {
       var %ts = $hget(%h, Timestamp) | if (%ts != $null) && (%ts != off) { hadd %h TimestampFormat $ifmatch | hadd %h Timestamp ON }
@@ -810,8 +819,10 @@ alias -l kte_imgpos return $mid(cfnrtp, $findtok(center fill normal stretch tile
 
 alias -l kte_status_open {
   var %w = @Kte_Status, %cw = $calc($dbuw * 100), %ch = $calc($dbuh * 24)
-  window -hndkpfCBi +fL %w -1 -1 %cw %ch
+  ; Simplified flags for Wine compatibility
+  window -hdpkCBi %w -1 -1 %cw %ch
   drawrect -rf %w $rgb(face) 0  0 0 %cw %ch
+  ; Ensure window is visible/active? No, keep hidden/desktop behavior simulated
   window -o %w
   window -hpBi +d @Kte_Cover 0 0 $window(-3).w $window(-3).h
   drawrect -nrf @Kte_Cover $rgb(128, 128, 128) 0  0 0 $window(-3).w $window(-3).h
@@ -1914,7 +1925,7 @@ alias -l kte_v {
 }
 
 ; default /theme.text
-#Kte_DefTheme on
+#Kte_DefTheme off
 alias theme.text {
   var %ln | set -n %ln $hget(Kte_Theme, $1)
   if (!$var(%:echo)) || (* !iswm %ln) { return $false }
