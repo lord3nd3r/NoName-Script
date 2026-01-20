@@ -156,8 +156,10 @@ alias kte_refresh {
 
 alias kte_load {
   if ($isid) { return }
-  if ($lock(dll)) { kte_error -a You must first enable the /dll command in mIRC Options (Alt+O), General\Lock section. | return }
+  write -a scripts\kte_debug.txt $asctime: KTE load called with args=$1-
+  if ($lock(dll)) { write -a scripts\kte_debug.txt $asctime: KTE load blocked: /dll disabled | kte_error -a You must first enable the /dll command in mIRC Options (Alt+O), General\Lock section. | return }
   var %h = Kte_Theme, %dat = Kte_Data, %fn, %ofn, %zfn, %ngz = $kte_gzdir $+ ngzipn.dll, %xthmdir = $kte_xthmtmpdir
+  write -a scripts\kte_debug.txt $asctime: KTE vars set ngz=%ngz xthmdir=%xthmdir
   if (!$isdir($kte_cachedir)) { mkdir $+(", $kte_cachedir, ") }
   if (!$0) { kte_dlg -md kte_load | return }
   if ($0 > 1) && ($regex($1, /-s\d+/i)) { var %sch = $int($mid($1, 3)) | tokenize 32 $2- }
@@ -173,6 +175,7 @@ alias kte_load {
   }
   if (!$isfile(%fn)) {
     if (%zfn) { %fn = %zfn | var %zfn | goto zipsearch }
+    write -a scripts\kte_debug.txt $asctime: File not found: %fn
     kte_error -a File not found
     return
   }
@@ -211,8 +214,9 @@ alias kte_load {
   ; ok, file exists... check if it's valid...
   if (!$read(%fn, nw, [mts])) { kte_error -a Invalid theme file (main theme section not found) | goto end }
   var %ver = $read(%fn, ns, MTSVersion)
-  if (!%ver) { kte_error -a Invalid theme file (no MTS version declared) | goto end }
-  elseif (!$istok(1 1.1, $calc(%ver), 32)) { kte_error -a Invalid theme file (standard v $+ %ver is not supported) | goto end }
+  write -a scripts\kte_debug.txt $asctime: MTSVersion read from %fn: %ver
+  if (!%ver) { write -a scripts\kte_debug.txt $asctime: Invalid theme file - no MTS version declared in %fn | kte_error -a Invalid theme file (no MTS version declared) | goto end }
+  elseif (!$istok(1 1.1, $calc(%ver), 32)) { write -a scripts\kte_debug.txt $asctime: Unsupported MTS version %ver in %fn | kte_error -a Invalid theme file (standard v $+ %ver is not supported) | goto end }
   if (%sch != $null) && ((%sch = 0) || (!$read(%fn, nw, $+([Scheme, %sch, ])))) {
     kte_error -a Invalid parameter (there's no scheme $chr(35) $+ %sch $+ ) | goto end
   }
@@ -337,23 +341,28 @@ alias -l kte_doload {
     if (%ofn) { hadd %dat Extracted $true } | else { hdel %dat Extracted }
   }
   write debug.txt Step 2: Backup done
+  write -a scripts\kte_debug.txt $asctime: Backup done
   .disable #Kte_DefTheme
   window -lhBi %w
   hdel -w %h * | if ($isfile($kte_file(Kte-DefTheme.dat))) { hload -ob %h $kte_file(Kte-DefTheme.dat) }
   loadbuf -tmts %w %fn
   write debug.txt Step 3: Buffer loaded
+  write -a scripts\kte_debug.txt $asctime: Buffer loaded for %fn
   if (%sch) { loadbuf -tScheme $+ %sch %w %fn }
   filter -cwwg %w %w /^[^\x20;]/
   write debug.txt Step 4: Filter done
+  write -a scripts\kte_debug.txt $asctime: Filter done for %fn
   %t = $line(%w, 0)
   while (%i <= %t) { hadd %h $line(%w, %i) | inc %i }
   write debug.txt Step 5: Hash filled (Lines: %t )
+  write -a scripts\kte_debug.txt $asctime: Hash filled, lines=%t
   close -@ %w
   if ($hget(%h, BaseColors) != $null) {
     tokenize 44 $ifmatch
     hadd %h BaseColors $replace($kte_bc($1) $kte_bc($2) $kte_bc($3) $kte_bc($4), $chr(32), $chr(44))
   }
   %_kte_apply = %apply
+  write -a scripts\kte_debug.txt $asctime: _kte_apply=%_kte_apply
   write debug.txt Step 6: Colors check (Bit3: $isbit(%apply, 3) Bit6: $isbit(%apply, 6) )
   if ($isbit(%apply, 3)) || ($isbit(%apply, 6)) { kte_apply_colors }
   write debug.txt Step 7: Colors done
