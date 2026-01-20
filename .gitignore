@@ -1,0 +1,35 @@
+# User Data & Personal Info
+servers.ini
+mirc.ini
+channels.ini
+urls.ini
+popups.ini
+remote.ini
+aliases.ini
+users.ini
+perform.ini
+control.ini
+
+# Directories
+logs/
+backups/
+downloads/
+received files/
+
+# Script State & Generated Files
+scripts/vars.nns
+scripts/users.nns
+scripts/tables/*.tbl
+scripts/tables/*.hsh
+
+# Binaries & System Files
+mirc.exe
+uninstall.exe
+*.lnk
+*.log
+tags
+
+# OS Specific
+Thumbs.db
+Desktop.ini
+.DS_Store
