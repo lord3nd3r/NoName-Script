@@ -176,6 +176,8 @@ on *:start:{
   if (%anti.idle) { .timeraidle -io 0 %aidle.max scon -at1 aidle }
   .thmupd
   thmls -s
+  ; Ensure visibility after theme load: apply safe fallback colors
+  fixcolors
   if (%upd) { thmecho -s NoNameScript has been successfully updated to version $thmhl(%version) $+ . You may need to re-load third party scripts. }
   thmecho -s Finished loading NoNameScript $thmhl(%version) with mIRC $thmhl($version) in $thmhl($round($calc($nnticks - %st),2)) second(s).
   if (!%ssplash) {

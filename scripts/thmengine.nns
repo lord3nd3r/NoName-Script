@@ -57,5 +57,28 @@ alias thmvchk return $true
 alias thm.lrand return
 alias thmupd return
 alias thmls return
+
+alias fixcolors {
+  ; Safe fallback colors to restore visibility
+  thmecho -s Restoring fallback colors to ensure text visibility...
+  color back 0
+  color normal 15
+  color info 11
+  color action 12
+  color join 10
+  color nick 14
+  color notice 13
+  color other 15
+  color edit 15
+  color list 15
+  color title 15
+  color gray 8
+  ; Restore timestamp and fonts to sane defaults
+  .timestamp -f (HH:nn)
+  .timestamp -g 1
+  thmecho -s Fallback colors applied.
+}
 alias thmerror echo $1 $chr(2) $+ $chr(3) $+ 04[Error] $+ $chr(15) $2-
 
+alias debug_log write debughang.txt $1-
+alias debug_log write debughang.txt $1-
