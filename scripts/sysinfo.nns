@@ -3,7 +3,12 @@
 ; Updated for robust WMI handling on Wine/Linux
 ; 
 
-alias sysinfo { nndlg -mh sysinfo }
+alias sysinfo { 
+  if ($1 == -d) { sysconfig }
+  else { psys all }
+}
+
+alias sysconfig { nndlg -mh sysinfo }
 
 dialog sysinfo.load {
   title "Loading system information..."
