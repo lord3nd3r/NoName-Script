@@ -175,7 +175,10 @@ alias window {
 alias echo {
   if ($1- == $null) { return }
   tokenize 32 $left($1-,938)
-  if ($1-) { !echo $1- }
+  ; Don't call built-in echo if only flags or formatting tokens are present
+  var %first = $gettok($1-,1,32), %rest = $gettok($1-,2-,32)
+  var %stripped = $remove(%rest,$chr(2) $+ $chr(3) $+ $chr(15) $+ $chr(12) $+ $chr(4) $+ $chr(31) $+ $chr(1) $+ $chr(0) $+ $chr(127))
+  if ($left(%first,1) != - || %stripped != $null) { !echo $1- } else { return }
   if ($1 isnum) { tokenize 32 $2- }
   if (-*n* iswmcs $1) { return }
   if (-*c* iswmcs $1) { var %� = $1-2,%t = $3,%e = $4- }
