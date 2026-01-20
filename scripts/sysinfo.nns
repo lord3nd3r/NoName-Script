@@ -210,16 +210,22 @@ alias psys {
     if (%sysinfo.gather.cpu || %sysinfo.gather.os) {
       set %sysinfo.gather.hdd $sbr(HDDs) $bytes($sysinfo.disk.total,3).suf $+ , $bytes($sysinfo.disk.total(free),3).suf free
       say %sysinfo.gather.cpu %sysinfo.gather.mobo %sysinfo.gather.ram %sysinfo.gather.hdd
-      say %sysinfo.gather.vga %sysinfo.gather.os
+      .timerSysinfo 1 2 psys.finish
     }
-    else { thmerror -a An error occured while gathering system information. }
-    
-    unset %sysinfo.gather.*
+    else { 
+      thmerror -a An error occured while gathering system information. 
+      unset %sysinfo.gather.*
+    }
   }
   else { 
     var %target = $replacex($1,cpu,2,processor,2,motherboard,3,mainboard,3,mobo,3,mb,3,ram,4,drives,5,drive,5,partitions,5,hdd,6,disks,6,disk,6,video,7,gfx,7,graphics,7,vga,7,sound,8,network,9,lan,9,printer,10,battery,11,usv,11,akku,11,os,12,windows,12,win,12)
     if (%target isnum) sysinfo.refb -s %target
   }
+}
+
+alias psys.finish {
+  say %sysinfo.gather.vga %sysinfo.gather.os
+  unset %sysinfo.gather.*
 }
 
 alias sysinfo.refb {
