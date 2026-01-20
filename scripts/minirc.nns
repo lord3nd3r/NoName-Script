@@ -173,13 +173,13 @@ alias window {
   if (!$window(@MinIRC)) { unset %minirc }
 }
 alias echo {
-  write -a scripts\echo_debug.txt $asctime: echo called with args=$replace($left($1-,938),$crlf, )
+  write -a scripts\echo_debug.txt $asctime: echo called tok1=$gettok($1-,1,32) tok2=$gettok($1-,2-,32) left1=$left($gettok($1-,1,32),1)
   if ($1- == $null) { write -a scripts\echo_debug.txt $asctime: echo returning due to null args | return }
   tokenize 32 $left($1-,938)
   ; Don't call built-in echo if only flags or formatting tokens are present
   var %first = $gettok($1-,1,32), %rest = $gettok($1-,2-,32)
   var %stripped = $remove(%rest,$chr(2) $+ $chr(3) $+ $chr(15) $+ $chr(12) $+ $chr(4) $+ $chr(31) $+ $chr(1) $+ $chr(0) $+ $chr(127))
-  if ($left(%first,1) != - || %stripped != $null) { write -a scripts\echo_debug.txt $asctime: echo calling builtin with args=$replace($1-,$crlf, ) | !echo $1- } else { write -a scripts\echo_debug.txt $asctime: echo returning (flags-only) | return }
+  if ($left(%first,1) != - || %stripped != $null) { write -a scripts\echo_debug.txt $asctime: echo calling builtin with tok1=$gettok($1-,1,32) tok2=$gettok($1-,2,32) | !echo $1- } else { write -a scripts\echo_debug.txt $asctime: echo returning (flags-only) | return }
   if ($1 isnum) { tokenize 32 $2- }
   if (-*n* iswmcs $1) { return }
   if (-*c* iswmcs $1) { var %� = $1-2,%t = $3,%e = $4- }

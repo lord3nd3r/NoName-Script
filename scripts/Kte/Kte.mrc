@@ -156,8 +156,8 @@ alias kte_refresh {
 
 alias kte_load {
   if ($isid) { return }
-  write -a scripts\kte_debug.txt $asctime: KTE load called with args=$1-
-  thmecho -s KTE: load called $1-
+  write -a scripts\kte_debug.txt $asctime: KTE load called args1=$gettok($1-,1,32) argsrest=$gettok($1-,2-,32)
+  thmecho -s KTE: load called $gettok($1-,1,32) $gettok($1-,2,32)
   if ($lock(dll)) { write -a scripts\kte_debug.txt $asctime: KTE load blocked: /dll disabled | thmecho -s KTE: /dll is locked - enable /dll in Options | kte_error -a You must first enable the /dll command in mIRC Options (Alt+O), General\Lock section. | return }
   var %h = Kte_Theme, %dat = Kte_Data, %fn, %ofn, %zfn, %ngz = $kte_gzdir $+ ngzipn.dll, %xthmdir = $kte_xthmtmpdir
   write -a scripts\kte_debug.txt $asctime: KTE vars set ngz=%ngz xthmdir=%xthmdir
