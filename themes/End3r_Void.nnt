@@ -1,0 +1,51 @@
+Name Void
+Version 1.0
+NNTVersion 1.03
+Author End3r
+Email end3r@localhost
+Homepage https://github.com/lord3nd3r
+Description Minimalist monochrome.
+
+Font Tahoma
+FontSize 11
+
+TimestampEnabled 1
+Timestamp 14[15HH:nn14] 
+
+NickColSelf 0
+NickColOp 15
+NickColVoice 14
+NickColRegular 1
+NickColProtect 15
+NickColIgnore 14
+
+Brackets 14[<text>14]
+LineSep 01-------------------- 
+
+Prefix 15> 
+
+GenEcho 14- <text>
+GenError 01! <text>
+GenHighlight 01<text>
+
+ChanText 14<<cnickcolor><nick>14> <text>
+ChanTextOwn 14<<cmecolor><me>14> <text>
+ChanAction 01* <cnickcolor><nick> 14<text>
+ChanActionOwn 01* <cmecolor><me> 14<text>
+
+QueryText 14<<nick>14> <text>
+QueryTextOwn 14<<me>14> <text>
+QueryAction 01* <nick> 14<text>
+QueryActionOwn 01* <me> 14<text>
+
+Msg 14<<nick>14> <text>
+MsgOwn 14-> 14<<target>14> <text>
+Action 01* <nick> <text>
+ActionOwn 01-> 01* <target> <text>
+
+ChanNotice 14-<nick>:<chan>14- <text>
+Notice 14-<nick>14- <text>
+NoticeOwn 14-> 14-<target>14- <text>
+ServerNotice 01! <server> 01! <text>
+
+CTCP 01[ <nick> <ctcp> 01] <text>

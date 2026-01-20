@@ -1,0 +1,51 @@
+Name Cyber
+Version 1.0
+NNTVersion 1.03
+Author End3r
+Email end3r@localhost
+Homepage https://github.com/lord3nd3r
+Description High-tech neon green theme.
+
+Font Consolas
+FontSize 10
+
+TimestampEnabled 1
+Timestamp 03<09HH:nn03> 
+
+NickColSelf 9
+NickColOp 3
+NickColVoice 10
+NickColRegular 15
+NickColProtect 2
+NickColIgnore 14
+
+Brackets 03|<text>03|
+LineSep 03------------------------------ 
+
+Prefix 09>>> 
+
+GenEcho 03:: <text>
+GenError 04!! <text>
+GenHighlight 08<text>
+
+ChanText 03[<cnickcolor><nick>03] 09<text>
+ChanTextOwn 03[<cmecolor><me>03] 09<text>
+ChanAction 09* <cnickcolor><nick> 03<text>
+ChanActionOwn 09* <cmecolor><me> 03<text>
+
+QueryText 03[<nick>03] 09<text>
+QueryTextOwn 03[<me>03] 09<text>
+QueryAction 09* <nick> 03<text>
+QueryActionOwn 09* <me> 03<text>
+
+Msg 03[<nick>03] <text>
+MsgOwn 03-> 03[<target>03] <text>
+Action 09* <nick> 03<text>
+ActionOwn 09-> 09* <target> 03<text>
+
+ChanNotice 03-<nick>:<chan>03- <text>
+Notice 03-<nick>03- <text>
+NoticeOwn 03-> 03-<target>03- <text>
+ServerNotice 04! <server> 04! <text>
+
+CTCP 04[ <nick> <ctcp> 04] <text>
