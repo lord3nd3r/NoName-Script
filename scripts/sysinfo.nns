@@ -1,8 +1,10 @@
-; ����������������������������������������
+; 
 ; NoNameScript-v2 v5.0 - system information - coded by greeny & mute
-; Don't edit anything in here unless you REALLY know what you're doing!
-; ����������������������������������������
+; Updated for robust WMI handling on Wine/Linux
+; 
+
 alias sysinfo { nndlg -mh sysinfo }
+
 dialog sysinfo.load {
   title "Loading system information..."
   size -1 -1 254 76
@@ -11,10 +13,12 @@ dialog sysinfo.load {
   text "", 2, 4 54 244 16, center
   text "", 3, 4 32 244 16, center
 }
+
 on *:dialog:sysinfo.load:init:0:{
-  mdx SetControlMDX $dname 3 ProgressBar > $mdxfile(ctl_gen)
+  if ($mdxfile(ctl_gen)) { mdx SetControlMDX $dname 3 ProgressBar > $v1 }
   mdx SetFont $dname 1 16 700 Tahoma
 }
+
 dialog sysinfo {
   title "System information [/sysinfo]"
   size -1 -1 396 304
@@ -31,25 +35,38 @@ dialog sysinfo {
   text "", 8, 6 250 258 16
   text "", 9, 268 250 122 16, right
 }
+
 on *:dialog:sysinfo:*:*:{
   if ($devent == init) {
     nndlg -m sysinfo.load
     did -a sysinfo.load 1 Loading system information...
     sysinfo.lref 1 Connecting to WMI... (this may take a while)
-    mdx SetControlMDX $dname 1 ListView report showsel single rowselect > $mdxfile(views)
+    if ($mdxfile(views)) { mdx SetControlMDX $dname 1 ListView report showsel single rowselect > $v1 }
+    
+    ; Setup columns (native listview fallback if MDX fails)
     ; did -i $dname 1 1 headerdims 80:1 100:2 180:3
     ; did -i $dname 1 1 headertext + 0 Hardware	+ 0 Information	+ 0 Value
+    
     mdx SetFont $dname 7 16 700 Tahoma
-    mdx SetControlMDX $dname 3 ToolBar flat list nodivider > $mdxfile(bars)
+    if ($mdxfile(bars)) { mdx SetControlMDX $dname 3 ToolBar flat list nodivider > $v1 }
     mdx SetBorderStyle $dname 3
-    did -i $dname 3 1 bmpsize 16 16
+    ; did -i $dname 3 1 bmpsize 16 16
+    
     did $iif($nomsg,-b,-e) sysinfo 5,10
+    
+    ; Populate Toolbar/Tabs
     var %z = 1
-    while ($gettok(chip|circuit|ram chip|select|drive|monitor|sound|hardware card|printer|component|windows,%z,124)) {
-      did -i $dname 3 1 setimage +nhd icon small $+($mircdir $+ iconsets\megapack\,$v1,.ico)
-      did -a $dname 3 $iif(%z == 1,+gcxW,+gcW) 24 %z 	 $+ $gettok(CPUs|Motherboard|RAM|Logical drives|Harddisks|Video controllers|Sound cards|Network adapters|Printers|Battery|Windows information,%z,124)
+    var %items = CPUs|Motherboard|RAM|Logical drives|Harddisks|Video controllers|Sound cards|Network adapters|Printers|Battery|Windows information
+    var %icons = chip|circuit|ram chip|select|drive|monitor|sound|hardware card|printer|component|windows
+    
+    while ($gettok(%icons, %z, 124)) {
+      var %icon = $v1
+      var %label = $gettok(%items, %z, 124)
+      ; Note: MDX setimage calls removed for stability/compatibility
+      did -a $dname 3 %label
       inc %z
     }
+    
     set %sysinfo.curpage 2
     did -c $dname 3 2
     sysinfo.ref Win32_Processor 2
@@ -57,11 +74,10 @@ on *:dialog:sysinfo:*:*:{
   }
   elseif ($devent == sclick) {
     if ($did == 3) {
-      did -o $dname $did %sysinfo.curpage +gcW 24 $wd($did($did,%sysinfo.curpage),2-)
-      did -o $dname $did $did($did).sel +pgcxW 24 $wd($did($did).seltext,2-)
-      set %sysinfo.curpage $did($did).sel
+      if ($did($did).sel) {
+        set %sysinfo.curpage $did($did).sel
+      }
       sysinfo.refb
-      ; Windows Vista "pressed button" workaround
       did -h sysinfo 3
       did -v sysinfo 3
     }
@@ -71,314 +87,371 @@ on *:dialog:sysinfo:*:*:{
   }
   elseif ($devent == close) { unset %sysinfo.curpage }
 }
-alias psys {
-  unset %sysinfo.gather.*
-  if ($$1 == all) {
-    var %a = $sysinfo.refb(-g,2)
-    var %b = $sysinfo.refb(-g,3)
-    var %c = $sysinfo.refb(-g,4)
-    var %d = $sysinfo.refb(-g,7)
-    var %e = $sysinfo.refb(-g,12)
-    if (error !isin %a %b %c %d %e) {
-      set %sysinfo.gather.hdd $sbr(HDDs) $bytes($sysinfo.disk.total,3).suf $+ , $bytes($sysinfo.disk.total(free),3).suf free
-      if ($var(%sysinfo.gather.*,0) == 6) {
-        say %sysinfo.gather.cpu %sysinfo.gather.mobo %sysinfo.gather.ram %sysinfo.gather.hdd
-        say %sysinfo.gather.vga %sysinfo.gather.os
-      }
-      else { thmerror -a An error occured while gathering system information. }
-    }
-    else { thmerror -a An error occured while gathering system information. }
-    unset %sysinfo.gather.*
-  }
-  else { sysinfo.refb -s $replacex($1,cpu,2,processor,2,motherboard,3,mainboard,3,mobo,3,mb,3,ram,4,drives,5,drive,5,partitions,5,hdd,6,disks,6,disk,6,video,7,gfx,7,graphics,7,vga,7,sound,8,network,9,lan,9,printer,10,battery,11,usv,11,akku,11,os,12,windows,12,win,12) }
-}
-alias sysinfo.refb {
-  if ($1 != -s) && ($1 != -g) { if ($dialog(sysinfo)) { did -r sysinfo 1 } }
-  elseif ($nomsg) {
-    $iif($dialog(sysinfo),errdialog,thmecho -a) you can only do this in channels and queries!
-    return
-  }
-  var %d = $iif($2,$2,$iif($did(sysinfo,3).sel,$v1,2))
-  if (%d == 2) { sysinfo.ref Win32_Processor $1 }
-  elseif (%d == 3) { sysinfo.ref Win32_BaseBoard $1 }
-  elseif (%d == 4) { sysinfo.ref Win32_PhysicalMemory $1 }
-  elseif (%d == 5) {
-    sysinfo.ref Win32_LogicalDisk $1
-    if ($1 != -g) {
-      if ($1 != -s) {
-        did -a sysinfo 1 1 HD drives	Total space	$bytes($sysinfo.disk.total(total),3).suf
-        did -a sysinfo 1 1 	Free space	$bytes($sysinfo.disk.total(free),3).suf
-      }
-      else {
-        var %f = $sysinfo.disk.total(free),%t = $sysinfo.disk.total(total)
-        say $sbr(HD drives) $bytes(%t,3).suf total space, $bytes(%f,3).suf $+ $nbr($round($calc(%f / %t *100),1) $+ %) free
-      }
-    }
-  }
-  elseif (%d == 6) { sysinfo.ref Win32_DiskDrive $1 }
-  elseif (%d == 7) { sysinfo.ref Win32_VideoController $1 }
-  elseif (%d == 8) { sysinfo.ref Win32_SoundDevice $1 }
-  elseif (%d == 9) { sysinfo.ref Win32_NetworkAdapter $1 }
-  elseif (%d == 10) { sysinfo.ref Win32_Printer $1 }
-  elseif (%d == 11) { sysinfo.ref Win32_Battery $1 }
-  elseif (%d == 12) { sysinfo.ref Win32_OperatingSystem $1 }
-}
+
 alias sysinfo.lref {
   if ($dialog(sysinfo.load)) {
-    did -ra $v1 2 $2-
-    did -a $v1 3 $1 0 4
+    did -a sysinfo.load 2 $2-
+    if ($3 isnum) did -a sysinfo.load 3 $int($calc(($1 / 3) * 100)) 100
   }
 }
+
 alias sysinfo.ref {
+  var %wmi_class = $1
+  var %flags = $2
+  
   if ($dialog(sysinfo)) { var %t = $iif($did(sysinfo,3).seltext,$gettok($v1,2-,9),CPUs) }
-  if ($2 != -s) && ($2 != -g) {
-    var %i = $nnticks
+  
+  if (%flags != -s) && (%flags != -g) {
+    var %ticks = $nnticks
     did -h sysinfo 1,8,9
     did -v sysinfo 7
     did -ra sysinfo 7 Refreshing %t $+ ... please wait!
   }
   else { unset %sysinfo.say }
+  
+  ; --- Safe WMI Execution ---
+  if ($com(sysloc)) .comclose sysloc
+  if ($com(sysserv)) .comclose sysserv
+  if ($com(sysinst)) .comclose sysinst
+  
   .comopen sysloc WbemScripting.SWbemLocator
-  if ($comerr) { goto error }
-  else {
-    var %c = $com(sysloc,ConnectServer,3,dispatch* sysserv)
-    .comclose sysloc
-    if (!%c) || (!$com(sysserv)) { goto error }
-
-    if ($com(sysserv)) {
-      var %i = $com(sysserv,InstancesOf,3,string,$1,dispatch* sysinst)
-      .comclose sysserv
-      if (!%i) { goto error }
-    }
-    else { goto error }
-    if ($com(sysinst)) {
-      sysinfo.lref 2 Enumerating collection...
-      noop $com(sysinst,Count,3)
-      sysinfo.lref 3 Getting information...
-      if ($2 != -s) && ($2 != -g) { sysinfo.ainfo $1 0 -s }
-      var %m = 1,%n = $com(sysinst).result
-      while (%m <= %n) {
-        $iif($2 == -s,sysinfo.sinfo,$iif($2 == -g,sysinfo.ginfo,sysinfo.ainfo)) $1 %m $iif($2 == -s || $2 == -g,$iif(%m == 1,-s $+ $iif(%m == %n,e) ,$iif(%m == %n,-e)))
-        inc %m
-      }
-      if ($dialog(sysinfo)) && ($did(sysinfo,1).lines == 1) { did -a sysinfo 1 None detected. }
-      if ($2 == -s) {
-        if (%sysinfo.say) {
-          say $v1
-          unset %sysinfo.say
-        }
-        else { errdialog No hardware detected! }
-      }
-      .comclose sysinst
-    }
-    else { goto error }
+  if ($comerr) || (!$com(sysloc)) { goto wmi_error }
+  
+  var %c = $com(sysloc,ConnectServer,3,dispatch* sysserv)
+  .comclose sysloc
+  if ($comerr) || (!%c) || (!$com(sysserv)) { goto wmi_error }
+  
+  if ($com(sysserv)) {
+    var %i = $com(sysserv,InstancesOf,3,string,%wmi_class,dispatch* sysinst)
+    .comclose sysserv
+    if ($comerr) || (!%i) || (!$com(sysinst)) { goto wmi_error }
   }
-  if ($2 != -s) && ($2 != -g) {
+  else { goto wmi_error }
+  
+  if ($com(sysinst)) {
+    sysinfo.lref 2 Enumerating collection...
+    noop $com(sysinst,Count,3)
+    
+    if ($com(sysinst).result == $null) { goto wmi_error }
+    
+    var %n = $com(sysinst).result
+    var %m = 1
+    
+    sysinfo.lref 3 Getting information...
+    
+    if (%flags != -s) && (%flags != -g) { sysinfo.ainfo %wmi_class 0 -s }
+    
+    while (%m <= %n) {
+      var %op = $iif(%flags == -s,sysinfo.sinfo,$iif(%flags == -g,sysinfo.ginfo,sysinfo.ainfo))
+      var %meta = $iif(%flags == -s || %flags == -g,$iif(%m == 1,-s $+ $iif(%m == %n,e) ,$iif(%m == %n,-e)))
+      
+      ; Execute safely
+      if ($isalias(%op)) %op %wmi_class %m %meta
+      
+      inc %m
+    }
+    
+    if ($dialog(sysinfo)) && ($did(sysinfo,1).lines == 1) { did -a sysinfo 1 None detected. }
+    
+    if (%flags == -s) {
+       if (%sysinfo.say) {
+         say $v1
+         unset %sysinfo.say
+       }
+       else { errdialog No hardware detected! }
+    }
+    
+    .comclose sysinst
+  }
+  else { goto wmi_error }
+  
+  if (%flags != -s) && (%flags != -g) {
     did -h sysinfo 7
     did -ra sysinfo 8 %t refreshed in:
-    did -ra sysinfo 9 $round($calc($nnticks - %i),2) second(s)
+    did -ra sysinfo 9 $round($calc($nnticks - %ticks),2) second(s)
     did -v sysinfo 1,8,9
   }
   return
-  :error
+
+  :wmi_error
+  if ($com(sysloc)) .comclose sysloc
+  if ($com(sysserv)) .comclose sysserv
+  if ($com(sysinst)) .comclose sysinst
+  
+  var %msg = Unable to retrieve system information (WMI Error).
   if ($dialog(sysinfo)) {
-    dialog -x sysinfo
-    errdialog an error occured while gathering the system information! You probably don't have WMI installed. $nbr($error)
+    did -ra sysinfo 7 %msg
+    did -v sysinfo 7
   }
-  else { thmerror -a An error occured while gathering the system information! $thmhl($error) }
+  else { 
+    thmerror -a %msg
+  }
   reseterror
-  return error
+  return
+}
+
+alias psys {
+  unset %sysinfo.gather.*
+  if ($$1 == all) {
+    sysinfo.refb -g 2
+    sysinfo.refb -g 3
+    sysinfo.refb -g 4
+    sysinfo.refb -g 7
+    sysinfo.refb -g 12
+    
+    if ($error) return
+    
+    ; Check if we gathered data
+    if (%sysinfo.gather.cpu || %sysinfo.gather.os) {
+      set %sysinfo.gather.hdd $sbr(HDDs) $bytes($sysinfo.disk.total,3).suf $+ , $bytes($sysinfo.disk.total(free),3).suf free
+      say %sysinfo.gather.cpu %sysinfo.gather.mobo %sysinfo.gather.ram %sysinfo.gather.hdd
+      say %sysinfo.gather.vga %sysinfo.gather.os
+    }
+    else { thmerror -a An error occured while gathering system information. }
+    
+    unset %sysinfo.gather.*
+  }
+  else { 
+    var %target = $replacex($1,cpu,2,processor,2,motherboard,3,mainboard,3,mobo,3,mb,3,ram,4,drives,5,drive,5,partitions,5,hdd,6,disks,6,disk,6,video,7,gfx,7,graphics,7,vga,7,sound,8,network,9,lan,9,printer,10,battery,11,usv,11,akku,11,os,12,windows,12,win,12)
+    if (%target isnum) sysinfo.refb -s %target
+  }
+}
+
+alias sysinfo.refb {
+  var %flags = $1
+  var %idx = $2
+  
+  if (%flags != -s) && (%flags != -g) { 
+      if ($dialog(sysinfo)) { did -r sysinfo 1 } 
+  }
+  elseif ($nomsg) {
+    if ($dialog(sysinfo)) errdialog you can only do this in channels and queries!
+    else thmecho -a you can only do this in channels and queries!
+    return
+  }
+  
+  var %d = $iif(%idx, %idx, $iif($did(sysinfo,3).sel, $v1, 2))
+  var %cls
+  
+  if (%d == 2) %cls = Win32_Processor
+  elseif (%d == 3) %cls = Win32_BaseBoard
+  elseif (%d == 4) %cls = Win32_PhysicalMemory
+  elseif (%d == 5) {
+     %cls = Win32_LogicalDisk
+     if (%flags != -g) && (%flags != -s) {
+        did -a sysinfo 1 1 HD drives	Total space	$bytes($sysinfo.disk.total(total),3).suf
+        did -a sysinfo 1 1 	Free space	$bytes($sysinfo.disk.total(free),3).suf
+     }
+  }
+  elseif (%d == 6) %cls = Win32_DiskDrive
+  elseif (%d == 7) %cls = Win32_VideoController
+  elseif (%d == 8) %cls = Win32_SoundDevice
+  elseif (%d == 9) %cls = Win32_NetworkAdapter
+  elseif (%d == 10) %cls = Win32_Printer
+  elseif (%d == 11) %cls = Win32_Battery
+  elseif (%d == 12) %cls = Win32_OperatingSystem
+  
+  if (%cls) sysinfo.ref %cls %flags
 }
 
 alias sysinfo.ainfo {
-  if ($1 == Win32_Processor) {
+  var %cls = $1, %id = $2
+  if (%cls == Win32_Processor) {
     if ($3 == -s) { }
     else {
-      did -a sysinfo 1 1 CPU $2 $+ 	Name	$brand($comval(sysinst,$2,Name))
-      if ($comval(sysinst,$2,Caption)) { did -a sysinfo 1 1 	Family	$v1 }
-      if ($comval(sysinst,$2,Manufacturer)) { did -a sysinfo 1 1 	Brand	$v1 }
-      if ($comval(sysinst,$2,CurrentClockSpeed)) { did -a sysinfo 1 1 	Clock speed	$v1 $+ MHz }
-      if ($comval(sysinst,$2,ExtClock)) { did -a sysinfo 1 1 	Front side bus	$v1 $+ MHz }
-      if ($comval(sysinst,$2,L2CacheSize)) { did -a sysinfo 1 1 	L2 cache size	$v1 $+ KB }
-      if ($comval(sysinst,$2,AddressWidth)) { did -a sysinfo 1 1 	Address width	$v1 $+ bit }
-      if ($comval(sysinst,$2,SocketDesignation)) { did -a sysinfo 1 1 	Socket type	$v1 }
-      if ($comval(sysinst,$2,ProcessorId)) { did -a sysinfo 1 1 	Processor ID	$v1 }
-      if ($comval(sysinst,$2,LoadPercentage) != $null) { did -a sysinfo 1 1 	Current load	$v1 $+ % }
+      did -a sysinfo 1 1 CPU %id $+ 	Name	$brand($comval(sysinst,%id,Name))
+      if ($comval(sysinst,%id,Caption)) { did -a sysinfo 1 1 	Family	$v1 }
+      if ($comval(sysinst,%id,Manufacturer)) { did -a sysinfo 1 1 	Brand	$v1 }
+      if ($comval(sysinst,%id,CurrentClockSpeed)) { did -a sysinfo 1 1 	Clock speed	$v1 $+ MHz }
+      if ($comval(sysinst,%id,ExtClock)) { did -a sysinfo 1 1 	Front side bus	$v1 $+ MHz }
+      if ($comval(sysinst,%id,L2CacheSize)) { did -a sysinfo 1 1 	L2 cache size	$v1 $+ KB }
+      if ($comval(sysinst,%id,AddressWidth)) { did -a sysinfo 1 1 	Address width	$v1 $+ bit }
+      if ($comval(sysinst,%id,SocketDesignation)) { did -a sysinfo 1 1 	Socket type	$v1 }
+      if ($comval(sysinst,%id,ProcessorId)) { did -a sysinfo 1 1 	Processor ID	$v1 }
+      if ($comval(sysinst,%id,LoadPercentage) != $null) { did -a sysinfo 1 1 	Current load	$v1 $+ % }
     }
   }
-  elseif ($1 == Win32_PhysicalMemory) {
+  elseif (%cls == Win32_PhysicalMemory) {
     if ($3 == -s) { }
     else {
-      did -a sysinfo 1 1 Module $2 $+ 	Type	$comval(sysinst,$2,Name)
-      if ($comval(sysinst,$2,Capacity)) { did -a sysinfo 1 1 	Capacity	$bytes($v1).suf }
-      if ($comval(sysinst,$2,BankLabel)) { did -a sysinfo 1 1 	Bank label	$v1 }
-      if ($comval(sysinst,$2,FormFactor)) { did -a sysinfo 1 1 	Form factor	$replacex($v1,10,PGA,11,RIMM,12,SODIMM,13,SRIMM,14,SMD,15,SSMP,16,QFP,17,TQFP,18,SOIC,19,LCC,20,PLCC,21,BGA,22,FPBGA,23,LGA,0,Unknown,1,Other,2,SIP,3,DIP,4,ZIP,5,SOJ,6,Proprietary,7,SIMM,8,DIMM,9,TSOP) }
-      if ($comval(sysinst,$2,MemoryType)) { did -a sysinfo 1 1 	Memory type	$replacex($v1,10,ROM,11,Flash,12,EEPROM,13,FEPROM,14,EPROM,15,CDRAM,16,3DRAM,17,SDRAM,18,SGRAM,19,RDRAM,20,DDR,0,Unknown,1,Other,2,DRAM,3,Synchronous DRAM,4,Cache DRAM,5,EDO,6,EDRAM,7,VRAM,8,SRAM,9,RAM) }
+      did -a sysinfo 1 1 Module %id $+ 	Type	$comval(sysinst,%id,Name)
+      if ($comval(sysinst,%id,Capacity)) { did -a sysinfo 1 1 	Capacity	$bytes($v1).suf }
+      if ($comval(sysinst,%id,BankLabel)) { did -a sysinfo 1 1 	Bank label	$v1 }
+      if ($comval(sysinst,%id,FormFactor)) { did -a sysinfo 1 1 	Form factor	$replacex($v1,10,PGA,11,RIMM,12,SODIMM,13,SRIMM,14,SMD,15,SSMP,16,QFP,17,TQFP,18,SOIC,19,LCC,20,PLCC,21,BGA,22,FPBGA,23,LGA,0,Unknown,1,Other,2,SIP,3,DIP,4,ZIP,5,SOJ,6,Proprietary,7,SIMM,8,DIMM,9,TSOP) }
+      if ($comval(sysinst,%id,MemoryType)) { did -a sysinfo 1 1 	Memory type	$replacex($v1,10,ROM,11,Flash,12,EEPROM,13,FEPROM,14,EPROM,15,CDRAM,16,3DRAM,17,SDRAM,18,SGRAM,19,RDRAM,20,DDR,0,Unknown,1,Other,2,DRAM,3,Synchronous DRAM,4,Cache DRAM,5,EDO,6,EDRAM,7,VRAM,8,SRAM,9,RAM) }
     }
   }
-  elseif ($1 == Win32_LogicalDisk) {
+  elseif (%cls == Win32_LogicalDisk) {
     if ($3 == -s) { }
     else {
-      var %x = $comval(sysinst,$2,VolumeSerialNumber)
-      did -a sysinfo 1 1 $comval(sysinst,$2,Name) $iif(!%x,$nbr(empty)) $+ 	Type	$comval(sysinst,$2,Description) $iif($comval(sysinst,$2,FileSystem),$nbr($v1))
-      if ($comval(sysinst,$2,VolumeName) != $null) { did -a sysinfo 1 1 	Label	$v1 }
-      if ($comval(sysinst,$2,Size) != $null) { did -a sysinfo 1 1 	Size	$bytes($v1).suf $nbr($bytes($comval(sysinst,$2,FreeSpace)).suf free) }
+      var %x = $comval(sysinst,%id,VolumeSerialNumber)
+      did -a sysinfo 1 1 $comval(sysinst,%id,Name) $iif(!%x,$nbr(empty)) $+ 	Type	$comval(sysinst,%id,Description) $iif($comval(sysinst,%id,FileSystem),$nbr($v1))
+      if ($comval(sysinst,%id,VolumeName) != $null) { did -a sysinfo 1 1 	Label	$v1 }
+      if ($comval(sysinst,%id,Size) != $null) { did -a sysinfo 1 1 	Size	$bytes($v1).suf $nbr($bytes($comval(sysinst,%id,FreeSpace)).suf free) }
       if (%x) { did -a sysinfo 1 1 	Serial number	$v1 }
       else { did -a sysinfo 1 1 	Status	No media inserted! }
-      if ($comval(sysinst,$2,SystemName)) { did -a sysinfo 1 1 	Owner	$v1 }
+      if ($comval(sysinst,%id,SystemName)) { did -a sysinfo 1 1 	Owner	$v1 }
     }
   }
-  elseif ($1 == Win32_DiskDrive) {
+  elseif (%cls == Win32_DiskDrive) {
     if ($3 == -s) { }
     else {
-      did -a sysinfo 1 1 Drive $2 $+ 	Name	$comval(sysinst,$2,Model)
-      if ($comval(sysinst,$2,MediaType)) { did -a sysinfo 1 1 	Type	$v1 }
-      if ($comval(sysinst,$2,Size)) { did -a sysinfo 1 1 	Size	$bytes($v1).suf }
-      if ($comval(sysinst,$2,Partitions)) { did -a sysinfo 1 1 	Partitions	$v1 }
-      if ($comval(sysinst,$2,InterfaceType)) { did -a sysinfo 1 1 	Interface	$v1 }
-      if ($comval(sysinst,$2,TotalSectors)) { did -a sysinfo 1 1 	Sectors	$bytes($v1,b) }
-      if ($comval(sysinst,$2,BytesPerSector)) { did -a sysinfo 1 1 	Bytes/sector	$bytes($v1,b) }
-      if ($comval(sysinst,$2,TotalTracks)) { did -a sysinfo 1 1 	Tracks	$bytes($v1,b) }
-      if ($comval(sysinst,$2,SectorsPerTrack)) { did -a sysinfo 1 1 	Sectors/track	$bytes($v1,b) }
-      if ($comval(sysinst,$2,TotalCylinders)) { did -a sysinfo 1 1 	Cylinders	$bytes($v1,b) }
-      if ($comval(sysinst,$2,TracksPerCylinder)) { did -a sysinfo 1 1 	Tracks/cylinder	$bytes($v1,b) }
-      if ($comval(sysinst,$2,TotalHeads)) { did -a sysinfo 1 1 	Heads	$bytes($v1,b) }
+      did -a sysinfo 1 1 Drive %id $+ 	Name	$comval(sysinst,%id,Model)
+      if ($comval(sysinst,%id,MediaType)) { did -a sysinfo 1 1 	Type	$v1 }
+      if ($comval(sysinst,%id,Size)) { did -a sysinfo 1 1 	Size	$bytes($v1).suf }
+      if ($comval(sysinst,%id,Partitions)) { did -a sysinfo 1 1 	Partitions	$v1 }
+      if ($comval(sysinst,%id,InterfaceType)) { did -a sysinfo 1 1 	Interface	$v1 }
+      if ($comval(sysinst,%id,TotalSectors)) { did -a sysinfo 1 1 	Sectors	$bytes($v1,b) }
+      if ($comval(sysinst,%id,BytesPerSector)) { did -a sysinfo 1 1 	Bytes/sector	$bytes($v1,b) }
+      if ($comval(sysinst,%id,TotalTracks)) { did -a sysinfo 1 1 	Tracks	$bytes($v1,b) }
+      if ($comval(sysinst,%id,SectorsPerTrack)) { did -a sysinfo 1 1 	Sectors/track	$bytes($v1,b) }
+      if ($comval(sysinst,%id,TotalCylinders)) { did -a sysinfo 1 1 	Cylinders	$bytes($v1,b) }
+      if ($comval(sysinst,%id,TracksPerCylinder)) { did -a sysinfo 1 1 	Tracks/cylinder	$bytes($v1,b) }
+      if ($comval(sysinst,%id,TotalHeads)) { did -a sysinfo 1 1 	Heads	$bytes($v1,b) }
     }
   }
-  elseif ($1 == Win32_VideoController) {
+  elseif (%cls == Win32_VideoController) {
     if ($3 == -s) { }
     else {
-      did -a sysinfo 1 1 Video controller $2 $+ 	Name	$comval(sysinst,$2,Caption)
-      if ($comval(sysinst,$2,VideoProcessor)) { did -a sysinfo 1 1 	Processor	$v1 }
-      if ($comval(sysinst,$2,AdapterRAM)) { did -a sysinfo 1 1 	Video RAM	$bytes($v1).suf }
-      if ($comval(sysinst,$2,VideoMemoryType) isnum 3-13) { did -a sysinfo 1 1 	Video RAM type	$replacex($v1,3,VRAM,4,DRAM,5,SRAM,6,WRAM,7,EDO RAM,8,Burst Synchronous DRAM,9,Pipelined Burst SRAM,10,CDRAM,11,3DRAM,12,SDRAM,13,SGRAM) }
-      if ($comval(sysinst,$2,VideoArchitecture) isnum 1-12) { did -a sysinfo 1 1 	Video architecture	$replacex($v1,10,8514A,11,XGA,12,Linear Frame Buffer,1,Other,2,Unknown,3,CGA,4,EGA,5,VGA,6,SVGA,7,MDA,8,HGC,9,MCGA) }
-      if ($comval(sysinst,$2,AdapterDACType)) { did -a sysinfo 1 1 	DAC type	$v1 }
-      var %h = $comval(sysinst,$2,CurrentHorizontalResolution),%v = $comval(sysinst,$2,CurrentVerticalResolution)
+      did -a sysinfo 1 1 Video controller %id $+ 	Name	$comval(sysinst,%id,Caption)
+      if ($comval(sysinst,%id,VideoProcessor)) { did -a sysinfo 1 1 	Processor	$v1 }
+      if ($comval(sysinst,%id,AdapterRAM)) { did -a sysinfo 1 1 	Video RAM	$bytes($v1).suf }
+      if ($comval(sysinst,%id,VideoMemoryType) isnum 3-13) { did -a sysinfo 1 1 	Video RAM type	$replacex($v1,3,VRAM,4,DRAM,5,SRAM,6,WRAM,7,EDO RAM,8,Burst Synchronous DRAM,9,Pipelined Burst SRAM,10,CDRAM,11,3DRAM,12,SDRAM,13,SGRAM) }
+      if ($comval(sysinst,%id,VideoArchitecture) isnum 1-12) { did -a sysinfo 1 1 	Video architecture	$replacex($v1,10,8514A,11,XGA,12,Linear Frame Buffer,1,Other,2,Unknown,3,CGA,4,EGA,5,VGA,6,SVGA,7,MDA,8,HGC,9,MCGA) }
+      if ($comval(sysinst,%id,AdapterDACType)) { did -a sysinfo 1 1 	DAC type	$v1 }
+      var %h = $comval(sysinst,%id,CurrentHorizontalResolution),%v = $comval(sysinst,%id,CurrentVerticalResolution)
       if (%h isnum 0-) && (%v isnum 0-) { did -a sysinfo 1 1 	Resolution	$+(%h,x,%v) }
-      if ($comval(sysinst,$2,CurrentBitsPerPixel)) { did -a sysinfo 1 1 	Color depth	$v1 $+ bpp }
-      if ($comval(sysinst,$2,CurrentRefreshRate) isnum 0-) { did -a sysinfo 1 1 	Refresh rate	$v1 $+ Hz }
-      if ($comval(sysinst,$2,CurrentScanMode) isnum 3-4) { did -a sysinfo 1 1 	Scan mode	$replacex($v1,3,Interlaced,4,Non Interlaced) }
-      if ($comval(sysinst,$2,InstalledDisplayDrivers)) { did -a sysinfo 1 1 	Display driver	$v1 }
-      if ($comval(sysinst,$2,DriverVersion)) { did -a sysinfo 1 1 	Driver version	$v1 }
-      if ($comval(sysinst,$2,DriverDate)) { did -a sysinfo 1 1 	Driver date	$wtfconv($v1).both }
+      if ($comval(sysinst,%id,CurrentBitsPerPixel)) { did -a sysinfo 1 1 	Color depth	$v1 $+ bpp }
+      if ($comval(sysinst,%id,CurrentRefreshRate) isnum 0-) { did -a sysinfo 1 1 	Refresh rate	$v1 $+ Hz }
+      if ($comval(sysinst,%id,CurrentScanMode) isnum 3-4) { did -a sysinfo 1 1 	Scan mode	$replacex($v1,3,Interlaced,4,Non Interlaced) }
+      if ($comval(sysinst,%id,InstalledDisplayDrivers)) { did -a sysinfo 1 1 	Display driver	$v1 }
+      if ($comval(sysinst,%id,DriverVersion)) { did -a sysinfo 1 1 	Driver version	$v1 }
+      if ($comval(sysinst,%id,DriverDate)) { did -a sysinfo 1 1 	Driver date	$wtfconv($v1).both }
     }
   }
-  elseif ($1 == Win32_NetworkAdapter) {
+  elseif (%cls == Win32_NetworkAdapter) {
     if ($3 == -s) { }
     else {
-      did -a sysinfo 1 1 Adapter $2 $+ 	Name	$comval(sysinst,$2,Description)
-      if ($comval(sysinst,$2,Manufacturer)) { did -a sysinfo 1 1 	Brand	$v1 }
-      if ($comval(sysinst,$2,MACAddress)) { did -a sysinfo 1 1 	MAC address	$v1 }
-      if ($comval(sysinst,$2,ServiceName)) { did -a sysinfo 1 1 	Service name	$v1 }
-      if ($comval(sysinst,$2,TimeOfLastReset)) { did -a sysinfo 1 1 	Last reset	$wtfconv($v1).both }
+      did -a sysinfo 1 1 Adapter %id $+ 	Name	$comval(sysinst,%id,Description)
+      if ($comval(sysinst,%id,Manufacturer)) { did -a sysinfo 1 1 	Brand	$v1 }
+      if ($comval(sysinst,%id,MACAddress)) { did -a sysinfo 1 1 	MAC address	$v1 }
+      if ($comval(sysinst,%id,ServiceName)) { did -a sysinfo 1 1 	Service name	$v1 }
+      if ($comval(sysinst,%id,TimeOfLastReset)) { did -a sysinfo 1 1 	Last reset	$wtfconv($v1).both }
     }
   }
-  elseif ($1 == Win32_OperatingSystem) {
+  elseif (%cls == Win32_OperatingSystem) {
     if ($3 == -s) { }
     else {
-      did -a sysinfo 1 1 Operating system	Name	$sysinfo.fixosdisp($comval(sysinst,$2,Caption))
-      if ($comval(sysinst,$2,Version)) { did -a sysinfo 1 1 	Version	$v1 }
-      if ($comval(sysinst,$2,ServicePackMajorVersion)) { did -a sysinfo 1 1 	Service pack version	$v1 }
-      if ($comval(sysinst,$2,BuildNumber)) { did -a sysinfo 1 1 	Build number	$v1 }
-      if ($comval(sysinst,$2,BuildType)) { did -a sysinfo 1 1 	Build type	$v1 }
-      if ($comval(sysinst,$2,NumberOfProcesses)) { did -a sysinfo 1 1 	Processes	$v1 }
-      if ($comval(sysinst,$2,FreePhysicalMemory)) { did -a sysinfo 1 1 	Free RAM	$bytes($calc($v1 *1024)).suf }
-      if ($comval(sysinst,$2,FreeVirtualMemory)) { did -a sysinfo 1 1 	Free virtual memory	$bytes($calc($v1 *1024)).suf }
-      if ($comval(sysinst,$2,TotalVirtualMemorySize)) { did -a sysinfo 1 1 	Total virtual memory size	$bytes($calc($v1 *1024)).suf }
-      if ($comval(sysinst,$2,InstallDate)) { did -a sysinfo 1 1 	First installed	$wtfconv($v1).both }
+      did -a sysinfo 1 1 Operating system	Name	$sysinfo.fixosdisp($comval(sysinst,%id,Caption))
+      if ($comval(sysinst,%id,Version)) { did -a sysinfo 1 1 	Version	$v1 }
+      if ($comval(sysinst,%id,ServicePackMajorVersion)) { did -a sysinfo 1 1 	Service pack version	$v1 }
+      if ($comval(sysinst,%id,BuildNumber)) { did -a sysinfo 1 1 	Build number	$v1 }
+      if ($comval(sysinst,%id,BuildType)) { did -a sysinfo 1 1 	Build type	$v1 }
+      if ($comval(sysinst,%id,NumberOfProcesses)) { did -a sysinfo 1 1 	Processes	$v1 }
+      if ($comval(sysinst,%id,FreePhysicalMemory)) { did -a sysinfo 1 1 	Free RAM	$bytes($calc($v1 *1024)).suf }
+      if ($comval(sysinst,%id,FreeVirtualMemory)) { did -a sysinfo 1 1 	Free virtual memory	$bytes($calc($v1 *1024)).suf }
+      if ($comval(sysinst,%id,TotalVirtualMemorySize)) { did -a sysinfo 1 1 	Total virtual memory size	$bytes($calc($v1 *1024)).suf }
+      if ($comval(sysinst,%id,InstallDate)) { did -a sysinfo 1 1 	First installed	$wtfconv($v1).both }
       did -a sysinfo 1 1 	Uptime	$sduration($uptime(system,3))
       did -a sysinfo 1 1 	Uptime record	$sduration($sysinfo.uptimerecord)
-      if ($comval(sysinst,$2,BootDevice)) { did -a sysinfo 1 1 	Boot device	$v1 }
-      if ($comval(sysinst,$2,RegisteredUser)) { did -a sysinfo 1 1 	Registered user	$v1 }
+      if ($comval(sysinst,%id,BootDevice)) { did -a sysinfo 1 1 	Boot device	$v1 }
+      if ($comval(sysinst,%id,RegisteredUser)) { did -a sysinfo 1 1 	Registered user	$v1 }
     }
   }
-  elseif ($1 == Win32_SoundDevice) {
+  elseif (%cls == Win32_SoundDevice) {
     if ($3 == -s) { }
     else {
-      did -a sysinfo 1 1 Sound card $2 $+ 	Name	$comval(sysinst,$2,Caption)
-      if ($comval(sysinst,$2,Manufacturer)) { did -a sysinfo 1 1 	Brand	$v1 }
-      if ($comval(sysinst,$2,DeviceID)) { did -a sysinfo 1 1 	DeviceID	$v1 }
+      did -a sysinfo 1 1 Sound card %id $+ 	Name	$comval(sysinst,%id,Caption)
+      if ($comval(sysinst,%id,Manufacturer)) { did -a sysinfo 1 1 	Brand	$v1 }
+      if ($comval(sysinst,%id,DeviceID)) { did -a sysinfo 1 1 	DeviceID	$v1 }
     }
   }
-  elseif ($1 == Win32_Printer) {
+  elseif (%cls == Win32_Printer) {
     if ($3 == -s) { }
     else {
-      did -a sysinfo 1 1 Printer $2 $+ 	Name	$comval(sysinst,$2,Caption)
-      if ($comval(sysinst,$2,PortName)) { did -a sysinfo 1 1 	Port	$v1 }
-      did -a sysinfo 1 1 	Status	$replacex($comval(sysinst,$2,PrinterStatus),1,Other,2,Unknown,3,Idle,4,Printing,5,Warmup,6,Stopped printing,7,Offline)
-      var %h = $comval(sysinst,$2,HorizontalResolution),%v = $comval(sysinst,$2,VerticalResolution)
+      did -a sysinfo 1 1 Printer %id $+ 	Name	$comval(sysinst,%id,Caption)
+      if ($comval(sysinst,%id,PortName)) { did -a sysinfo 1 1 	Port	$v1 }
+      did -a sysinfo 1 1 	Status	$replacex($comval(sysinst,%id,PrinterStatus),1,Other,2,Unknown,3,Idle,4,Printing,5,Warmup,6,Stopped printing,7,Offline)
+      var %h = $comval(sysinst,%id,HorizontalResolution),%v = $comval(sysinst,%id,VerticalResolution)
       if (%h isnum 0-) && (%v isnum 0-) { did -a sysinfo 1 1 	Resolution	$+(%h,x,%v,dpi) }
-      if ($comval(sysinst,$2,PrintProcessor)) { did -a sysinfo 1 1 	Print spooler	$v1 }
+      if ($comval(sysinst,%id,PrintProcessor)) { did -a sysinfo 1 1 	Print spooler	$v1 }
     }
   }
-  elseif ($1 == Win32_BaseBoard) {
+  elseif (%cls == Win32_BaseBoard) {
     if ($3 == -s) { }
     else {
-      var %n = $comval(sysinst,$2,Manufacturer),%c = $comval(sysinst,$2,Version)
+      var %n = $comval(sysinst,%id,Manufacturer),%c = $comval(sysinst,%id,Version)
       did -a sysinfo 1 1 Motherboard	Brand	$iif(!%n || %n = null,Unknown,%n)
-      if ($comval(sysinst,$2,Product)) { did -a sysinfo 1 1 	Product	$v1 }
+      if ($comval(sysinst,%id,Product)) { did -a sysinfo 1 1 	Product	$v1 }
       if (%c) && (%c != null) && (%c != none) { did -a sysinfo 1 1 	Version	$v1 }
     }
   }
-  elseif ($1 == Win32_Battery) {
+  elseif (%cls == Win32_Battery) {
     if ($3 == -s) { }
     else {
-      did -a sysinfo 1 1 Battery $2 $+ 	Caption	$comval(sysinst,$2,Caption)
-      if ($comval(sysinst,$2,DeviceID)) { did -a sysinfo 1 1 	Name	$v1 }
-      if ($comval(sysinst,$2,EstimatedRunTime) < 9999) {
+      did -a sysinfo 1 1 Battery %id $+ 	Caption	$comval(sysinst,%id,Caption)
+      if ($comval(sysinst,%id,DeviceID)) { did -a sysinfo 1 1 	Name	$v1 }
+      if ($comval(sysinst,%id,EstimatedRunTime) < 9999) {
         did -a sysinfo 1 1 	Run time remaining	$v1 minutes
         did -a sysinfo 1 1 	Status	Running on battery
       }
       else { did -a sysinfo 1 1 	Status	Charging/AC }
-      if ($comval(sysinst,$2,EstimatedChargeRemaining) isnum 0-100) { did -a sysinfo 1 1 	Charge remaining	$v1 $+ % }
+      if ($comval(sysinst,%id,EstimatedChargeRemaining) isnum 0-100) { did -a sysinfo 1 1 	Charge remaining	$v1 $+ % }
     }
   }
 }
-alias sysinfo.fixosdisp { return $replace($1-,™,�,®,�) }
+
+alias sysinfo.fixosdisp { return $replace($1-,™,,®,) }
+
 alias sysinfo.ginfo {
-  var %n
-  if ($1 == Win32_Processor) { set %sysinfo.gather.cpu $sbr(CPU $+ $2) $brand($comval(sysinst,$2,Name)) @ $comval(sysinst,$2,CurrentClockSpeed) $+ MHz }
-  elseif ($1 == Win32_BaseBoard) {
-    var %m = $comval(sysinst,$2,Manufacturer),%b = $comval(sysinst,$2,Product)
+  var %cls = $1, %id = $2
+  if (%cls == Win32_Processor) { set %sysinfo.gather.cpu $sbr(CPU $+ %id) $brand($comval(sysinst,%id,Name)) @ $comval(sysinst,%id,CurrentClockSpeed) $+ MHz }
+  elseif (%cls == Win32_BaseBoard) {
+    var %m = $comval(sysinst,%id,Manufacturer),%b = $comval(sysinst,%id,Product)
     set %sysinfo.gather.mobo $iif(%m || %b,$nbr(%m %b mainboard))
   }
-  elseif ($1 == Win32_PhysicalMemory) {
+  elseif (%cls == Win32_PhysicalMemory) {
     if (s isin $3) { set %sysinfo.gram 0 }
-    inc %sysinfo.gram $comval(sysinst,$2,Capacity)
+    inc %sysinfo.gram $comval(sysinst,%id,Capacity)
     if (e isin $3) {
       set %sysinfo.gather.ram $iif(%sysinfo.gram,$sbr(RAM) $bytes(%sysinfo.gram).suf)
       unset %sysinfo.gram
     }
   }
-  elseif ($1 == Win32_VideoController) { set %sysinfo.gather.vga $sbr(VGA $+ $2) $comval(sysinst,$2,Caption) $iif($comval(sysinst,$2,AdapterRAM),$nbr($bytes($v1).suf)) $+ $iif($comval(sysinst,$2,CurrentHorizontalResolution),$+($chr(44) $v1,x,$comval(sysinst,$2,CurrentVerticalResolution),x,$comval(sysinst,$2,CurrentBitsPerPixel))) $+ $iif($comval(sysinst,$2,CurrentRefreshRate) isnum 0-,$chr(44) $v1 $+ Hz) }
-  elseif ($1 == Win32_OperatingSystem) {
-    set %sysinfo.gather.os $sbr(OS) $sysinfo.fixosdisp($comval(sysinst,$2,Caption)) $+ $iif($comval(sysinst,$2,ServicePackMajorVersion),$chr(32) $nbr(SP $+ $v1)) $+ , $sduration($uptime(system,3)) uptime, $sduration($sysinfo.uptimerecord) uptime record
-    set %sysinfo.gather.ram %sysinfo.gather.ram $+ , $bytes($calc($comval(sysinst,$2,FreePhysicalMemory) *1024)).suf free
+  elseif (%cls == Win32_VideoController) { set %sysinfo.gather.vga $sbr(VGA $+ %id) $comval(sysinst,%id,Caption) $iif($comval(sysinst,%id,AdapterRAM),$nbr($bytes($v1).suf)) $+ $iif($comval(sysinst,%id,CurrentHorizontalResolution),$+($chr(44) $v1,x,$comval(sysinst,%id,CurrentVerticalResolution),x,$comval(sysinst,%id,CurrentBitsPerPixel))) $+ $iif($comval(sysinst,%id,CurrentRefreshRate) isnum 0-,$chr(44) $v1 $+ Hz) }
+  elseif (%cls == Win32_OperatingSystem) {
+    set %sysinfo.gather.os $sbr(OS) $sysinfo.fixosdisp($comval(sysinst,%id,Caption)) $+ $iif($comval(sysinst,%id,ServicePackMajorVersion),$chr(32) $nbr(SP $+ $v1)) $+ , $sduration($uptime(system,3)) uptime, $sduration($sysinfo.uptimerecord) uptime record
+    set %sysinfo.gather.ram %sysinfo.gather.ram $+ , $bytes($calc($comval(sysinst,%id,FreePhysicalMemory) *1024)).suf free
   }
 }
+
 alias sysinfo.sinfo {
-  if ($1 == Win32_Processor) { var %c = $comval(sysinst,$2,L2CacheSize),%s = $comval(sysinst,$2,SocketDesignation),%n = $sbr(CPU $2) $brand($comval(sysinst,$2,Name)) $nbr($iif(%c,%c $+ KB L2 Cache) $+ $iif(%s,$iif(%c,$chr(44)) %s)) @ $comval(sysinst,$2,CurrentClockSpeed) $+ MHz $+ $iif($comval(sysinst,$2,ExtClock),$chr(32) $nbr($v1 $+ MHz FSB)) $+ $iif($comval(sysinst,$2,LoadPercentage) isnum,$chr(44) $v1 $+ % load) }
-  elseif ($1 == Win32_BaseBoard) { var %v = $comval(sysinst,$2,Version),%n = $sbr(Motherboard) $comval(sysinst,$2,Manufacturer) $comval(sysinst,$2,Product) $+ $iif(%v && %v != null && %v != none,$chr(44) version $v1) }
-  elseif ($1 == Win32_Battery) { var %z = $comval(sysinst,$2,EstimatedRunTime),%n = $sbr(Battery $2) $comval(sysinst,$2,Caption) $+ : $comval(sysinst,$2,DeviceID) $+ $iif(%z < 9999,$chr(44) status: running on battery $+ $chr(44) run time remaining: %z minutes,$chr(44) status: charging/AC) $+ , current charge: $comval(sysinst,$2,EstimatedChargeRemaining) $+ % }
-  elseif ($1 == Win32_PhysicalMemory) { var %n = $sbr(RAM module $2) $bytes($comval(sysinst,$2,Capacity)).suf $+ $iif($comval(sysinst,$2,FormFactor),$chr(44) form factor: $replacex($v1,10,PGA,11,RIMM,12,SODIMM,13,SRIMM,14,SMD,15,SSMP,16,QFP,17,TQFP,18,SOIC,19,LCC,20,PLCC,21,BGA,22,FPBGA,23,LGA,0,Unknown,1,Other,2,SIP,3,DIP,4,ZIP,5,SOJ,6,Proprietary,7,SIMM,8,DIMM,9,TSOP)) $+ $iif($comval(sysinst,$2,MemoryType),$chr(44) type: $replacex($v1,10,ROM,11,Flash,12,EEPROM,13,FEPROM,14,EPROM,15,CDRAM,16,3DRAM,17,SDRAM,18,SGRAM,19,RDRAM,20,DDR,1,Other,2,DRAM,3,Synchronous DRAM,4,Cache DRAM,5,EDO,6,EDRAM,7,VRAM,8,SRAM,9,RAM)) }
-  elseif ($1 == Win32_LogicalDisk) { var %s = $comval(sysinst,$2,Size),%f = $comval(sysinst,$2,FreeSpace),%n = $sbr($comval(sysinst,$2,Name)) $comval(sysinst,$2,Description) $nbr($iif(%s != $null && %f != $null,Free: $+($bytes(%f).suf,$nbr($percent(%f,%s,1)),/,$bytes(%s).suf,$chr(44) $comval(sysinst,$2,FileSystem),$chr(44) label: $iif($comval(sysinst,$2,VolumeName),$shorten(30,$v1),unknown)) ,No disc)) }
-  elseif ($1 == Win32_DiskDrive) { var %n = $sbr(Drive $2) $comval(sysinst,$2,Model) $+ , $iif($comval(sysinst,$2,Size),$bytes($v1).suf size $+ $chr(44)) $iif($comval(sysinst,$2,Partitions),$v1 partition(s) $+ $chr(44)) $comval(sysinst,$2,InterfaceType) interface }
-  elseif ($1 == Win32_VideoController) { var %n = $sbr(Video controller $2) $comval(sysinst,$2,Caption) $+ $iif($comval(sysinst,$2,VideoProcessor),$chr(32) $nbr(Processor: $v1)) $+ , $+ $iif($comval(sysinst,$2,AdapterRAM),$chr(32) $bytes($v1).suf) $+ $iif($comval(sysinst,$2,CurrentHorizontalResolution),$+($chr(44) $v1,x,$comval(sysinst,$2,CurrentVerticalResolution),x,$comval(sysinst,$2,CurrentBitsPerPixel))) $+ $iif($comval(sysinst,$2,CurrentRefreshRate) isnum 0-,$chr(44) $v1 $+ Hz) $+ , driver version: $comval(sysinst,$2,DriverVersion) }
-  elseif ($1 == Win32_NetworkAdapter) { var %n = $iif(s isin $3,$sbr(Network adapters)) $comval(sysinst,$2,Description) $+ $iif($3 != -e,$chr(44)) }
-  elseif ($1 == Win32_OperatingSystem) {
+  var %cls = $1, %id = $2
+  var %n
+  if (%cls == Win32_Processor) { var %c = $comval(sysinst,%id,L2CacheSize),%s = $comval(sysinst,%id,SocketDesignation),%n = $sbr(CPU %id) $brand($comval(sysinst,%id,Name)) $nbr($iif(%c,%c $+ KB L2 Cache) $+ $iif(%s,$iif(%c,$chr(44)) %s)) @ $comval(sysinst,%id,CurrentClockSpeed) $+ MHz $+ $iif($comval(sysinst,%id,ExtClock),$chr(32) $nbr($v1 $+ MHz FSB)) $+ $iif($comval(sysinst,%id,LoadPercentage) isnum,$chr(44) $v1 $+ % load) }
+  elseif (%cls == Win32_BaseBoard) { var %v = $comval(sysinst,%id,Version),%n = $sbr(Motherboard) $comval(sysinst,%id,Manufacturer) $comval(sysinst,%id,Product) $+ $iif(%v && %v != null && %v != none,$chr(44) version $v1) }
+  elseif (%cls == Win32_Battery) { var %z = $comval(sysinst,%id,EstimatedRunTime),%n = $sbr(Battery %id) $comval(sysinst,%id,Caption) $+ : $comval(sysinst,%id,DeviceID) $+ $iif(%z < 9999,$chr(44) status: running on battery $+ $chr(44) run time remaining: %z minutes,$chr(44) status: charging/AC) $+ , current charge: $comval(sysinst,%id,EstimatedChargeRemaining) $+ % }
+  elseif (%cls == Win32_PhysicalMemory) { var %n = $sbr(RAM module %id) $bytes($comval(sysinst,%id,Capacity)).suf $+ $iif($comval(sysinst,%id,FormFactor),$chr(44) form factor: $replacex($v1,10,PGA,11,RIMM,12,SODIMM,13,SRIMM,14,SMD,15,SSMP,16,QFP,17,TQFP,18,SOIC,19,LCC,20,PLCC,21,BGA,22,FPBGA,23,LGA,0,Unknown,1,Other,2,SIP,3,DIP,4,ZIP,5,SOJ,6,Proprietary,7,SIMM,8,DIMM,9,TSOP)) $+ $iif($comval(sysinst,%id,MemoryType),$chr(44) type: $replacex($v1,10,ROM,11,Flash,12,EEPROM,13,FEPROM,14,EPROM,15,CDRAM,16,3DRAM,17,SDRAM,18,SGRAM,19,RDRAM,20,DDR,1,Other,2,DRAM,3,Synchronous DRAM,4,Cache DRAM,5,EDO,6,EDRAM,7,VRAM,8,SRAM,9,RAM)) }
+  elseif (%cls == Win32_LogicalDisk) { var %s = $comval(sysinst,%id,Size),%f = $comval(sysinst,%id,FreeSpace),%n = $sbr($comval(sysinst,%id,Name)) $comval(sysinst,%id,Description) $nbr($iif(%s != $null && %f != $null,Free: $+($bytes(%f).suf,$nbr($percent(%f,%s,1)),/,$bytes(%s).suf,$chr(44) $comval(sysinst,%id,FileSystem),$chr(44) label: $iif($comval(sysinst,%id,VolumeName),$shorten(30,$v1),unknown)) ,No disc)) }
+  elseif (%cls == Win32_DiskDrive) { var %n = $sbr(Drive %id) $comval(sysinst,%id,Model) $+ , $iif($comval(sysinst,%id,Size),$bytes($v1).suf size $+ $chr(44)) $iif($comval(sysinst,%id,Partitions),$v1 partition(s) $+ $chr(44)) $comval(sysinst,%id,InterfaceType) interface }
+  elseif (%cls == Win32_VideoController) { var %n = $sbr(Video controller %id) $comval(sysinst,%id,Caption) $+ $iif($comval(sysinst,%id,VideoProcessor),$chr(32) $nbr(Processor: $v1)) $+ , $+ $iif($comval(sysinst,%id,AdapterRAM),$chr(32) $bytes($v1).suf) $+ $iif($comval(sysinst,%id,CurrentHorizontalResolution),$+($chr(44) $v1,x,$comval(sysinst,%id,CurrentVerticalResolution),x,$comval(sysinst,%id,CurrentBitsPerPixel))) $+ $iif($comval(sysinst,%id,CurrentRefreshRate) isnum 0-,$chr(44) $v1 $+ Hz) $+ , driver version: $comval(sysinst,%id,DriverVersion) }
+  elseif (%cls == Win32_NetworkAdapter) { var %n = $iif(s isin $3,$sbr(Network adapters)) $comval(sysinst,%id,Description) $+ $iif($3 != -e,$chr(44)) }
+  elseif (%cls == Win32_OperatingSystem) {
     sysinfo.chkuptimerecord
-    var %z = $comval(sysinst,$2,ServicePackMajorVersion),%n = $sbr(Operating system) $sysinfo.fixosdisp($comval(sysinst,$2,Caption)) $+ $iif(%z,$chr(32) $nbr(SP $+ %z)) $+ , version $comval(sysinst,$2,Version) $nbr($comval(sysinst,$2,NumberOfProcesses) processes running $+ $chr(44) $bytes($calc($comval(sysinst,$2,FreePhysicalMemory) *1024)).suf free RAM $+ $chr(44) installed $wtfconv($comval(sysinst,$2,InstallDate)).dur ago $+ $chr(44) $sduration($uptime(system,3)) uptime $+ $chr(44) $sduration($sysinfo.uptimerecord) uptime record)
+    var %z = $comval(sysinst,%id,ServicePackMajorVersion),%n = $sbr(Operating system) $sysinfo.fixosdisp($comval(sysinst,%id,Caption)) $+ $iif(%z,$chr(32) $nbr(SP $+ %z)) $+ , version $comval(sysinst,%id,Version) $nbr($comval(sysinst,%id,NumberOfProcesses) processes running $+ $chr(44) $bytes($calc($comval(sysinst,%id,FreePhysicalMemory) *1024)).suf free RAM $+ $chr(44) installed $wtfconv($comval(sysinst,%id,InstallDate)).dur ago $+ $chr(44) $sduration($uptime(system,3)) uptime $+ $chr(44) $sduration($sysinfo.uptimerecord) uptime record)
   }
-  elseif ($1 == Win32_SoundDevice) { var %n = $sbr(Sound card $2) $comval(sysinst,$2,Caption) $+ , brand: $comval(sysinst,$2,Manufacturer) }
-  elseif ($1 == Win32_Printer) { var %h = $comval(sysinst,$2,HorizontalResolution),%v = $comval(sysinst,$2,VerticalResolution),%n = $sbr(Printer $2) $comval(sysinst,$2,Caption) on $comval(sysinst,$2,PortName) $nbr($iif(%h && %v,$+(%h,x,%v,dpi,$chr(44))) Status: $replacex($comval(sysinst,$2,PrinterStatus),1,Other,2,Unknown,3,Idle,4,Printing,5,Warmup,6,Stopped printing,7,Offline)) }
+  elseif (%cls == Win32_SoundDevice) { var %n = $sbr(Sound card %id) $comval(sysinst,%id,Caption) $+ , brand: $comval(sysinst,%id,Manufacturer) }
+  elseif (%cls == Win32_Printer) { var %h = $comval(sysinst,%id,HorizontalResolution),%v = $comval(sysinst,%id,VerticalResolution),%n = $sbr(Printer %id) $comval(sysinst,%id,Caption) on $comval(sysinst,%id,PortName) $nbr($iif(%h && %v,$+(%h,x,%v,dpi,$chr(44))) Status: $replacex($comval(sysinst,%id,PrinterStatus),1,Other,2,Unknown,3,Idle,4,Printing,5,Warmup,6,Stopped printing,7,Offline)) }
+  
   if ($len(%sysinfo.say %n) > 400) {
     say %sysinfo.say
     set %sysinfo.say %n
   }
   else { set %sysinfo.say %sysinfo.say %n }
 }
+
 on *:active:*:{ if ($dialog(sysinfo)) { did $iif($nomsg,-b,-e) sysinfo 5,10 } }
+
 alias wtfconv {
   tokenize 43 $1-
   var %x = $ctime($+($mid($1,7,2),.,$mid($1,5,2),.,$mid($1,1,4) $mid($1,9,2),:,$mid($1,11,2),:,$mid($1,13,2)))
@@ -387,6 +460,7 @@ alias wtfconv {
   elseif ($prop == both) { return $longtime(%x) $nbr($sduration($calc($ctime - %x)) ago) }
   else { return $longtime(%x) }
 }
+
 alias sysinfo.disk.total {
   var %r = 0,%i = $disk(0)
   while (%i) {
@@ -398,11 +472,14 @@ alias sysinfo.disk.total {
   }
   return %r
 }
+
 alias sysinfo.uptimerecord {
   sysinfo.chkuptimerecord
   return %sysinfo.uptimerecord
 }
+
 alias sysinfo.chkuptimerecord { if (!%sysinfo.uptimerecord) || ($uptime(system,3) > %sysinfo.uptimerecord) { set %sysinfo.uptimerecord $v1 } }
-; ����������������������������������������
+
+; 
 ; End of file
-; ����������������������������������������
+; 
