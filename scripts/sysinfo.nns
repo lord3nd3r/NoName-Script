@@ -192,7 +192,7 @@ alias sysinfo.ref {
 
 alias sysinfo.ainfo {
   if ($1 == Win32_Processor) {
-    if ($3 == -s) { ; did -i sysinfo 1 1 headertext + 0 CPU	+ 0 Information	+ 0 Value }
+    if ($3 == -s) { }
     else {
       did -a sysinfo 1 1 CPU $2 $+ 	Name	$brand($comval(sysinst,$2,Name))
       if ($comval(sysinst,$2,Caption)) { did -a sysinfo 1 1 	Family	$v1 }
@@ -207,7 +207,7 @@ alias sysinfo.ainfo {
     }
   }
   elseif ($1 == Win32_PhysicalMemory) {
-    if ($3 == -s) { ; did -i sysinfo 1 1 headertext + 0 RAM	+ 0 Information	+ 0 Value }
+    if ($3 == -s) { }
     else {
       did -a sysinfo 1 1 Module $2 $+ 	Type	$comval(sysinst,$2,Name)
       if ($comval(sysinst,$2,Capacity)) { did -a sysinfo 1 1 	Capacity	$bytes($v1).suf }
@@ -217,7 +217,7 @@ alias sysinfo.ainfo {
     }
   }
   elseif ($1 == Win32_LogicalDisk) {
-    if ($3 == -s) { ; did -i sysinfo 1 1 headertext + 0 Disk	+ 0 Information	+ 0 Value }
+    if ($3 == -s) { }
     else {
       var %x = $comval(sysinst,$2,VolumeSerialNumber)
       did -a sysinfo 1 1 $comval(sysinst,$2,Name) $iif(!%x,$nbr(empty)) $+ 	Type	$comval(sysinst,$2,Description) $iif($comval(sysinst,$2,FileSystem),$nbr($v1))
@@ -229,7 +229,7 @@ alias sysinfo.ainfo {
     }
   }
   elseif ($1 == Win32_DiskDrive) {
-    if ($3 == -s) { ; did -i sysinfo 1 1 headertext + 0 Drive	+ 0 Information	+ 0 Value }
+    if ($3 == -s) { }
     else {
       did -a sysinfo 1 1 Drive $2 $+ 	Name	$comval(sysinst,$2,Model)
       if ($comval(sysinst,$2,MediaType)) { did -a sysinfo 1 1 	Type	$v1 }
@@ -246,7 +246,7 @@ alias sysinfo.ainfo {
     }
   }
   elseif ($1 == Win32_VideoController) {
-    if ($3 == -s) { ; did -i sysinfo 1 1 headertext + 0 Video controller	+ 0 Information	+ 0 Value }
+    if ($3 == -s) { }
     else {
       did -a sysinfo 1 1 Video controller $2 $+ 	Name	$comval(sysinst,$2,Caption)
       if ($comval(sysinst,$2,VideoProcessor)) { did -a sysinfo 1 1 	Processor	$v1 }
@@ -265,7 +265,7 @@ alias sysinfo.ainfo {
     }
   }
   elseif ($1 == Win32_NetworkAdapter) {
-    if ($3 == -s) { ; did -i sysinfo 1 1 headertext + 0 Adapter	+ 0 Information	+ 0 Value }
+    if ($3 == -s) { }
     else {
       did -a sysinfo 1 1 Adapter $2 $+ 	Name	$comval(sysinst,$2,Description)
       if ($comval(sysinst,$2,Manufacturer)) { did -a sysinfo 1 1 	Brand	$v1 }
@@ -275,7 +275,7 @@ alias sysinfo.ainfo {
     }
   }
   elseif ($1 == Win32_OperatingSystem) {
-    if ($3 == -s) { ; did -i sysinfo 1 1 headertext + 0 Operating system	+ 0 Information	+ 0 Value }
+    if ($3 == -s) { }
     else {
       did -a sysinfo 1 1 Operating system	Name	$sysinfo.fixosdisp($comval(sysinst,$2,Caption))
       if ($comval(sysinst,$2,Version)) { did -a sysinfo 1 1 	Version	$v1 }
@@ -294,7 +294,7 @@ alias sysinfo.ainfo {
     }
   }
   elseif ($1 == Win32_SoundDevice) {
-    if ($3 == -s) { ; did -i sysinfo 1 1 headertext + 0 Sound card	+ 0 Information	+ 0 Value }
+    if ($3 == -s) { }
     else {
       did -a sysinfo 1 1 Sound card $2 $+ 	Name	$comval(sysinst,$2,Caption)
       if ($comval(sysinst,$2,Manufacturer)) { did -a sysinfo 1 1 	Brand	$v1 }
@@ -302,7 +302,7 @@ alias sysinfo.ainfo {
     }
   }
   elseif ($1 == Win32_Printer) {
-    if ($3 == -s) { ; did -i sysinfo 1 1 headertext + 0 Printer	+ 0 Information	+ 0 Value }
+    if ($3 == -s) { }
     else {
       did -a sysinfo 1 1 Printer $2 $+ 	Name	$comval(sysinst,$2,Caption)
       if ($comval(sysinst,$2,PortName)) { did -a sysinfo 1 1 	Port	$v1 }
@@ -313,7 +313,7 @@ alias sysinfo.ainfo {
     }
   }
   elseif ($1 == Win32_BaseBoard) {
-    if ($3 == -s) { ; did -i sysinfo 1 1 headertext + 0 Motherboard	+ 0 Information	+ 0 Value }
+    if ($3 == -s) { }
     else {
       var %n = $comval(sysinst,$2,Manufacturer),%c = $comval(sysinst,$2,Version)
       did -a sysinfo 1 1 Motherboard	Brand	$iif(!%n || %n = null,Unknown,%n)
@@ -322,7 +322,7 @@ alias sysinfo.ainfo {
     }
   }
   elseif ($1 == Win32_Battery) {
-    if ($3 == -s) { ; did -i sysinfo 1 1 headertext + 0 Battery	+ 0 Information	+ 0 Value }
+    if ($3 == -s) { }
     else {
       did -a sysinfo 1 1 Battery $2 $+ 	Caption	$comval(sysinst,$2,Caption)
       if ($comval(sysinst,$2,DeviceID)) { did -a sysinfo 1 1 	Name	$v1 }
