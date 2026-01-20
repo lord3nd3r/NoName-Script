@@ -282,7 +282,10 @@ alias -l kte_rmdir var %x = $finddir($1-, *, 0, 1, kte_rmdir $1-) | .rmdir $+(",
 alias -l kte_trydir if (\ isin $1) { return } | var %fn = $+($kte_thmdir, $iif((*.mts iswm %fn), $left(%fn, -4), %fn), \, $1) | if ($isfile(%fn)) { return %fn }
 
 alias kte_echo kte_out Echo $color(info) $1-
-alias kte_error kte_out Error $color(info) $1-
+alias kte_error {
+  write -a scripts\kte_debug.txt $asctime: $1-
+  kte_out Error $color(info) $1-
+}
 ; /kte_out str <type>, int <color>, str <target>, str <text>
 alias -l kte_out {
   if ($3 == -a) && (@* !iswm $active) { var %f = a }

@@ -1,7 +1,7 @@
-; ––––––––––––––––––––––––––––––––––––––––
+; ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 ; NoNameScript-v2 v5.0 - $input replacements - coded by greeny & mute
 ; Don't edit anything in here unless you REALLY know what you're doing!
-; ––––––––––––––––––––––––––––––––––––––––
+; ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 alias eddialog {
   var %t = eddialog. $+ $trnum
   set %geninp.text $replace($1,,$crlf)
@@ -134,9 +134,10 @@ on *:dialog:idialog.*:*:*:{
   }
 }
 alias errdialog {
-  var %t = errdialog. $+ $trnum
-  set %geninp.text Error: $replace($1-,,$crlf)
-  return $dialog(%t,%t,-4)
+  ; Dialog creation may fail under Wine; fallback to echoing the message to the status window.
+  var %msg = Error: $replace($1-,,$crlf)
+  thmecho -a %msg
+  return
 }
 dialog errdialog.* {
   title "Error!"
@@ -177,6 +178,6 @@ on *:dialog:ydialog.*:*:*:{
     unset %geninp.text
   }
 }
-; ––––––––––––––––––––––––––––––––––––––––
+; ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 ; End of file
-; ––––––––––––––––––––––––––––––––––––––––
+; ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
