@@ -817,35 +817,10 @@ alias -l kte_setbg {
 }
 alias -l kte_imgpos return $mid(cfnrtp, $findtok(center fill normal stretch tile photo, $gettok($1, 1, 32), 1, 32), 1)
 
-alias -l kte_status_open {
-  var %w = @Kte_Status, %cw = $calc($dbuw * 100), %ch = $calc($dbuh * 24)
-  ; Simplified flags for Wine compatibility
-  window -hdpkCBi %w -1 -1 %cw %ch
-  drawrect -rf %w $rgb(face) 0  0 0 %cw %ch
-  ; Ensure window is visible/active? No, keep hidden/desktop behavior simulated
-  window -o %w
-  window -hpBi +d @Kte_Cover 0 0 $window(-3).w $window(-3).h
-  drawrect -nrf @Kte_Cover $rgb(128, 128, 128) 0  0 0 $window(-3).w $window(-3).h
-  window -a @Kte_Cover
-}
-alias -l kte_status_close close -@ @Kte_Status @Kte_Cover
-alias -l kte_status_show {
-  var %w = @Kte_Status, %cw = $window(@Kte_Status).dw
-  drawrect -nrf %w $rgb(face) 0  0 0 %cw $window(@Kte_Status).dh
-  drawtext -nro %w $rgb(text)  Tahoma -8  $calc((%cw - $width($2-, Tahoma, -8, 1, 0)) / 2) $calc(4 * $dbuh)  $2-
-  if ($1) {
-    var %rx = $calc(3 * $dbuw), %ry = $calc(15 * $dbuh), %rw = $calc(94 * $dbuw), %rh = $calc(5 * $dbuh), %xywh = %rx %ry %rw %rh
-    drawrect -nrf %w $rgb(hilight) 0 %xywh
-    drawrect -nr %w $rgb(shadow) 0 %xywh
-    drawline -nr %w $rgb(hilight) 0  $calc(%rx + %rw - 1) $calc(%ry + 1)  $calc(%rx + %rw - 1) $calc(%ry + %rh - 1)  %rx $calc(%ry + %rh - 1)
-    ;drawrect -nr %w $rgb(frame) 0 %xywh
-  }
-  drawdot %w
-}
-alias -l kte_status_prog {
-  var %w = @Kte_Status
-  drawrect -rf %w $rgb(0, 0, 128) 0 $calc(3 * $dbuw + 1) $calc(15 * $dbuh + 1) $calc((94 * $dbuw - 2) * $1 / $2) $calc(5 * $dbuh - 2)
-}
+alias -l kte_status_open return
+alias -l kte_status_close return
+alias -l kte_status_show echo -s 03[Theme Status] $2-
+alias -l kte_status_prog return
 
 ; the dialog
 
