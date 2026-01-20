@@ -481,6 +481,8 @@ menu menubar {
   .-
   .S&etup...:setup -c Awaysystem
   &Tools
+  .&mIRC Options...:options
+  .-
   .$iif($window($active).logfile,View &log,&Log viewer):viewlog -a
   .-
   .&Games
