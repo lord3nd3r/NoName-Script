@@ -39,3 +39,6 @@ alias thmload return
 alias thmsave return
 alias thm.export return
 alias thm.import return
+
+; Fix for missing winpic command causing "not connected to server" errors
+alias winpic return
