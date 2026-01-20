@@ -1,11 +1,11 @@
-; ––––––––––––––––––––––––––––––––––––––––
+; ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 ; NoNameScript-v2 v5.0 - popups - coded by greeny & mute
 ; Don't edit anything in here unless you REALLY know what you're doing!
-; ––––––––––––––––––––––––––––––––––––––––
+; ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 on ^$*:hotlink:/[a-z]/i:*:{ if ($mouse.key !& 4) { halt } }
 on $*:hotlink:/[a-z]/i:*:{
   var %g
-  noop $regsub($1,/[^\wöüäÖÜÄêéèâáàôóòÊÉÈÂÁÀÔÓÒ]/g,,%g)
+  noop $regsub($1,/[^\wï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½]/g,,%g)
   popdll.new
   popdll.add 1	+g 1 0 $shorten(12,%g) $+ :
   popdll.add 2	+ 2 0 -
@@ -454,9 +454,18 @@ alias sub.schemes {
     close -@ @schmload
   }
 }
+alias sub.themes {
+  if ($1 isnum) {
+    var %f = $findfile(themes, *.nnt, $1)
+    if (!%f) return
+    return $left($nopath(%f), -4) $+ :thmload $qt(%f)
+  }
+}
 menu menubar {
   &Setup...:setup
   Th&emes
+  .&Load Theme
+  ..$submenu($sub.themes($1))
   .&Change scheme
   ..$submenu($sub.schemes($1))
   .&Load default theme:thm.ldef
@@ -856,6 +865,6 @@ on *:dialog:qinfo.setup:*:*:{
     set %qinfo.action %x
   }
 }
-; ––––––––––––––––––––––––––––––––––––––––
+; ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 ; End of file
-; ––––––––––––––––––––––––––––––––––––––––
+; ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
