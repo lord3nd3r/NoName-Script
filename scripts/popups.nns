@@ -454,13 +454,6 @@ alias sub.schemes {
     close -@ @schmload
   }
 }
-alias sub.themes {
-  if ($1 isnum) {
-    var %f = $findfile(themes, *.nnt, $1)
-    if (!%f) return
-    return $left($nopath(%f), -4) $+ :thmload $qt(%f)
-  }
-}
 menu menubar {
   &Setup...:setup
   Th&emes

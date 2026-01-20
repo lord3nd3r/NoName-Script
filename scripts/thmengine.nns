@@ -168,7 +168,7 @@ on *:dialog:themes:sclick:19: {
   var %sel = $did(themes, 90).sel
   if (!%sel) return
   
-  var %file = $did(themes, 90).seltext
+  var %file = themes\ $+ $did(themes, 90).seltext
   if ($isfile(%file)) {
     thmload %file
   }
@@ -176,7 +176,7 @@ on *:dialog:themes:sclick:19: {
 
 on *:dialog:themes:sclick:90: {
   ; Update Info when clicking list
-  var %file = $did(themes, 90).seltext
+  var %file = themes\ $+ $did(themes, 90).seltext
   if ($isfile(%file)) {
     did -ra themes 11 $thmdata(%file, Name)
     did -ra themes 14 $thmdata(%file, Author)
@@ -186,8 +186,8 @@ on *:dialog:themes:sclick:90: {
 
 alias thmllist {
   did -r themes 90
-  ; Find all .nnt files in themes folder
-  noop $findfile(themes, *.nnt, 0, 0, did -a themes 90 $1-)
+  ; Find all .nnt files in themes folder and show only filename
+  noop $findfile(themes, *.nnt, 0, 0, did -a themes 90 $nopath($1-))
 }
 
 ; -- Compatibility Stubs --
