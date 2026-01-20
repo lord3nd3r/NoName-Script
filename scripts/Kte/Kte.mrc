@@ -157,7 +157,8 @@ alias kte_refresh {
 alias kte_load {
   if ($isid) { return }
   write -a scripts\kte_debug.txt $asctime: KTE load called with args=$1-
-  if ($lock(dll)) { write -a scripts\kte_debug.txt $asctime: KTE load blocked: /dll disabled | kte_error -a You must first enable the /dll command in mIRC Options (Alt+O), General\Lock section. | return }
+  thmecho -s KTE: load called $1-
+  if ($lock(dll)) { write -a scripts\kte_debug.txt $asctime: KTE load blocked: /dll disabled | thmecho -s KTE: /dll is locked - enable /dll in Options | kte_error -a You must first enable the /dll command in mIRC Options (Alt+O), General\Lock section. | return }
   var %h = Kte_Theme, %dat = Kte_Data, %fn, %ofn, %zfn, %ngz = $kte_gzdir $+ ngzipn.dll, %xthmdir = $kte_xthmtmpdir
   write -a scripts\kte_debug.txt $asctime: KTE vars set ngz=%ngz xthmdir=%xthmdir
   if (!$isdir($kte_cachedir)) { mkdir $+(", $kte_cachedir, ") }
@@ -176,6 +177,7 @@ alias kte_load {
   if (!$isfile(%fn)) {
     if (%zfn) { %fn = %zfn | var %zfn | goto zipsearch }
     write -a scripts\kte_debug.txt $asctime: File not found: %fn
+    thmecho -s KTE: File not found: %fn
     kte_error -a File not found
     return
   }
@@ -348,10 +350,12 @@ alias -l kte_doload {
   loadbuf -tmts %w %fn
   write debug.txt Step 3: Buffer loaded
   write -a scripts\kte_debug.txt $asctime: Buffer loaded for %fn
+  thmecho -s KTE: buffer loaded for %fn
   if (%sch) { loadbuf -tScheme $+ %sch %w %fn }
   filter -cwwg %w %w /^[^\x20;]/
   write debug.txt Step 4: Filter done
   write -a scripts\kte_debug.txt $asctime: Filter done for %fn
+  thmecho -s KTE: filter done for %fn
   %t = $line(%w, 0)
   while (%i <= %t) { hadd %h $line(%w, %i) | inc %i }
   write debug.txt Step 5: Hash filled (Lines: %t )
